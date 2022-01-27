@@ -1,0 +1,32 @@
+
+<div class="header">
+    <div class="left">
+            <img src="/assets/images/shared/copart.png" alt="">
+    </div>
+    <div class="right">
+        <p>Ольвач Денис</p>
+        <p>Всего авто 10</p>
+        <p>В работе 2</p>
+    </div>
+</div>
+<nav>
+    <ul>
+        <li>
+          
+            <a [routerLink]="['automobiles']">automobiles</a>
+        </li>
+        <li>
+        
+            <a [routerLink]="['finances']">finances</a>
+        </li>
+        <li>
+            <a [routerLink]="['calculators']">калькуляторы</a>
+           
+        </li>
+        <li>
+            <a [routerLink]="['clients']">clients</a>
+          
+        </li>
+    </ul>
+</nav>
+<router-outlet></router-outlet>

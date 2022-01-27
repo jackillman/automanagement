@@ -1,0 +1,66 @@
+
+<div class="main-panel">
+    <!-- <ng-container *ngFor="let menu of menuList">
+        <div class="panel-item">
+            {{menu}}
+            
+        
+        </div>
+    </ng-container> -->
+    <div class="panel-item auth">
+        <div class="inner-block">
+            <form class="auth-form">
+                <mat-form-field  appearance="fill">
+                  <mat-label>Email</mat-label>
+                  <input type="email" matInput [formControl]="emailFormControl"
+                         placeholder="Ex. pat@example.com">
+                  <mat-hint>Errors appear instantly!</mat-hint>
+                  <mat-error *ngIf="emailFormControl.hasError('email') && !emailFormControl.hasError('required')">
+                    Please enter a valid email address
+                  </mat-error>
+                  <mat-error *ngIf="emailFormControl.hasError('required')">
+                    Email is <strong>required</strong>
+                  </mat-error>
+                </mat-form-field>
+
+                <mat-form-field  appearance="fill">
+                    <mat-label>Password</mat-label>
+                    <input type="text" matInput [formControl]="passwordFormControl"
+                           placeholder="password">
+                    <mat-hint>Errors appear instantly!</mat-hint>
+                    <mat-error *ngIf="passwordFormControl.hasError('password') && !passwordFormControl.hasError('required')">
+                      Please enter a valid email address
+                    </mat-error>
+                    <mat-error *ngIf="passwordFormControl.hasError('required')">
+                      Password is <strong>required</strong>
+                    </mat-error>
+                  </mat-form-field>
+                  <div class="example-button-row">
+
+                    <button mat-raised-button color="primary" >Войти</button>
+                    <a routerLink="/dashboard" routerLinkActive="active">dashboard</a>
+                  </div>
+              </form>
+        </div>
+        
+    
+    </div>
+    <div class="panel-item calculator">
+        <div class="inner-block">
+         
+            <button  mat-raised-button color="primary" (click)="openCalculatorDialog()">Calculator</button>
+        </div>
+    </div>
+    <div class="panel-item cia">
+        <div class="inner-block">
+         
+            cia
+        </div>
+    </div>
+    <div class="panel-item calculator">
+        <div class="inner-block">
+         
+            <button  mat-raised-button color="primary" (click)="openContactusDialog()">Связь с нами</button>
+        </div>
+    </div>
+</div>

@@ -1,0 +1,29 @@
+<div class="calc-container">
+	<h2>Расчёт автомобиля на 2022 год</h2>
+	<p>Данный раздел предостовлен в ознакомительных целях.Рассчитывается примерная стоимость автомобиля.</p>
+
+
+	<form [formGroup]="calcForm">
+
+		<mat-form-field  appearance="fill">
+			<mat-label>auction</mat-label>
+			<input type="text" matInput formControlName="auction"
+				placeholder="buyPrice">
+
+		</mat-form-field> 
+
+		<mat-form-field  appearance="fill">
+			<mat-label>buyPrice</mat-label>
+			<input type="text" matInput formControlName="buyPrice"
+				placeholder="buyPrice">
+
+		</mat-form-field>
+
+		<mat-form-field  appearance="fill">
+			<mat-label>bodyType</mat-label>
+			<input type="text" matInput formControlName="bodyType"
+				placeholder="bodyType">
+
+		</mat-form-field>
+	</form>
+</div>
