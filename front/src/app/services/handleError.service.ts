@@ -1,5 +1,5 @@
 import { Injectable, Inject, PLATFORM_ID } from '@angular/core';
-import { isPlatformBrowser } from '@angular/common';
+
 import { HttpResponse } from '@angular/common/http';
 import { HttpErrorResponse } from '@angular/common/http';
 import { Observable, of, throwError } from 'rxjs';
@@ -12,24 +12,17 @@ export interface IHandleError {
 
 @Injectable()
 export class HandleErrorService {
-    private isBrowser: boolean; // (!) not available inside handleError()
 
     constructor(@Inject(PLATFORM_ID) private platformId: Object) {
-        this.isBrowser = isPlatformBrowser(platformId);
+    
     }
 
-    public handleError(error: HttpErrorResponse|HttpResponse<any>, isBrowser: boolean): Observable<never> {
+    public handleError(error: HttpErrorResponse|HttpResponse<any>|HttpErrorResponse): Observable<never> {
         let errorMessage: IHandleError;
 
-        if (isBrowser) {
-            console.groupCollapsed(`%cHandleError`, 'color:red;font-size:13px;');
-            console.log(error);
-            console.groupEnd();
-        } else {
-            console.log(`HandleErrorService.handleError(error.status: ${error.status})`);
-            console.log(error);
-        }
-
+ 
+        console.log(`HandleErrorService.handleError(error.status: ${error.status})`);
+        console.log(error);
         // Connection error
         if (error.status === 0) {
             errorMessage = <IHandleError> {
@@ -45,9 +38,27 @@ export class HandleErrorService {
                 statusText: 'Internal Server Error'
             };
         } else {
-            errorMessage =  (error as HttpResponse<any>).body.json ?  (error as HttpResponse<any>).body.json() : error;
+            
+            console.log(`body`,error,(error as HttpErrorResponse))
+                if(error) {
+                    errorMessage = {
+                        success:error.ok,
+                        status:error.status,
+                        statusText: error.statusText
+    
+                    }
+                } else {
+                    errorMessage = {
+                        success:false,
+                        status: 0,
+                        statusText: "Not auth"
+    
+                    } 
+                }
+            
+         
         }
-        return <never> throwError(errorMessage);
+        return throwError(errorMessage);
     }
 
     /**

@@ -15,10 +15,11 @@ const API_BACKEND: string = environment.api;
 export class GlobalService {
     
     public SOURCE: {[key: string]: string} = {
-        localization:       `/assets/locale/localization.json`,
+        // localization:       `/assets/locale/localization.json`,
         // articles:             `${this.API}/api/articles/`,
-        articles:             `${this.API}/api/articles/`,
-        categories:             `${this.API}/api/categories/`,
+        cars:                   `${this.API}/api/v1/cars/`,
+        users:             `${this.API}/api/v1/users/`,
+        auth:             `${this.API}/api/v1/auth/`,
     };
 
     get API(): string {

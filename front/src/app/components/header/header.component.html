@@ -1,0 +1,19 @@
+<div class="header">
+    <div class="container">
+        <div class="left">
+            <img src="/assets/images/road.gif" alt="">
+     
+        </div>
+        <div class="right">
+            
+            <div class="account-info">
+                
+                <p>Login:  {{SS.currentUser.login}}</p>
+                <p>{{SS.currentUser.lastName}} {{SS.currentUser.name}} </p>
+                <p>Всего авто {{SS.currentUser.allAuto}}</p>
+                <p>В работе {{SS.currentUser.inWorkAuto}}</p>
+            </div>
+            <a [routerLink]="['']">Вернуться</a>
+        </div>
+    </div>
+</div>

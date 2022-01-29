@@ -4,6 +4,8 @@ import { MatDialog } from '@angular/material/dialog';
 import { Router } from '@angular/router';
 import { CalculatorComponent } from 'src/app/components/calculator/calculator.component';
 import { ContactUsComponent } from 'src/app/components/contact-us/contact-us.component';
+import { GetService } from 'src/app/services/get.service';
+import { StateService } from 'src/app/services/state.service';
 @Component({
   selector: 'app-home',
   templateUrl: './home.component.html',
@@ -23,8 +25,10 @@ export class HomeComponent implements OnInit {
     `auth`,`calculator`,`cia`,`about`
   ]
   constructor(public dialog: MatDialog,
+              private getService:GetService,
+              public SS:StateService,
               private router:Router) {
-                
+
               }
 
   ngOnInit(): void {
@@ -51,8 +55,23 @@ export class HomeComponent implements OnInit {
   }
   public onSubmit(){
     console.warn(this.profileForm.value);
-    if(this.profileForm.value[`login`]==='admin' && this.profileForm.value[`password`]==='password') {
-      this.router.navigate(['/dashboard'])
-    }
+    this.getService.tryAuth(this.profileForm.value).subscribe(
+      (res:any)=>{
+        console.log(res)
+        if(res){
+          this.SS.currentUser = res;
+          this.SS.isAuth = true
+          this.router.navigate(['/dashboard'])
+        } else {
+          this.SS.isAuth = false
+        }
+        // if(res.login==='admin') {
+        //   this.router.navigate(['/dashboard'])
+        // }
+      }
+    )
+    // if(this.profileForm.value[`login`]==='admin' && this.profileForm.value[`password`]==='password') {
+    //   this.router.navigate(['/dashboard'])
+    // }
   }
 }

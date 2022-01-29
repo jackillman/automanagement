@@ -1,94 +1,103 @@
-import '@/index';
-import config from 'config';
-import compression from 'compression';
-import cookieParser from 'cookie-parser';
-import cors from 'cors';
-import express from 'express';
-import helmet from 'helmet';
-import hpp from 'hpp';
-import morgan from 'morgan';
-import { connect, set } from 'mongoose';
-import swaggerJSDoc from 'swagger-jsdoc';
-import swaggerUi from 'swagger-ui-express';
-import { dbConnection } from '@databases';
-import { Routes } from '@interfaces/routes.interface';
-import errorMiddleware from '@middlewares/error.middleware';
-import { logger, stream } from '@utils/logger';
 
-class App {
-  public app: express.Application;
-  public port: string | number;
-  public env: string;
-
-  constructor(routes: Routes[]) {
-    this.app = express();
-    this.port = process.env.PORT || 3000;
-    this.env = process.env.NODE_ENV || 'development';
-
-    this.connectToDatabase();
-    this.initializeMiddlewares();
-    this.initializeRoutes(routes);
-    this.initializeSwagger();
-    this.initializeErrorHandling();
+//#!/usr/bin/env node
+import express  from 'express';
+import  fs  from "fs";
+import path from 'path';
+const crypto = require('crypto')
+export class Application {
+    private tokenKey = '1a2b-3c4d-5e6f-7g8h'
+    private routerModule:any = Object.create({})
+    private data:any
+    constructor(data:any){
+     
+     //  console.log("abababababababab",data)
+        this.data = data
+        this.init();
+    }
+    public readFile(filePath: string) {
+      return new Promise(function (resolve, reject) {
+          fs.readFile(filePath, 'utf8', function (err, dataDemo1) {
+              if (err)
+                  reject(err);
+              else
+                  resolve(dataDemo1);
+          });
+      });
   }
+    public async fsHandlerApp(filePath:string) {
+      // const filePath = path.join(__dirname, '../public/DATA/APIv2/promos.json');
+       try {
+           const data:any =  await this.readFile(filePath);
+         //  console.log(`data`,data)
+           return JSON.parse(data)
+       } catch (error) {
+           console.error(error);
+       }
 
-  public listen() {
-    this.app.listen(this.port, () => {
-      logger.info(`=================================`);
-      logger.info(`======= ENV: ${this.env} =======`);
-      logger.info(`🚀 App listening on the port ${this.port}`);
-      logger.info(`=================================`);
-    });
+   }
+
+    public  getCars() {
+      const filePath:string = path.join(__dirname, './DATA/API/cars.json')
+      return this.fsHandlerApp(filePath);
+   
   }
-
-  public getServer() {
-    return this.app;
+    public  getUsers() {
+      const filePath:string = path.join(__dirname, './DATA/API/users.json')
+      return this.fsHandlerApp(filePath);
+   
   }
+    private createApi(){
+      
+        this.data.app.get('/api/v1/cars', async (req:express.Request ,res:express.Response,next:Function)=> {
+       
+          res.send( await this.getCars());
+        });
 
-  private connectToDatabase() {
-    if (this.env !== 'production') {
-      set('debug', true);
+        
+        this.data.app.get('/api/v1/users', async (req:express.Request ,res:express.Response,next:Function)=> {
+          console.log(`this.getUsers()`,await this.getUsers())
+          res.send(await this.getUsers());
+        });
+        this.data.app.post('/api/v1/auth/', async (req, res) => {
+          const users = await this.getUsers()
+          console.log(`users`,users)
+          console.log(`req.body`,req.body)
+          for (let user of users) {
+            if (
+              req.body.login === user.login &&
+              req.body.password === user.password
+            ) {
+              let head = Buffer.from(
+                JSON.stringify({ alg: 'HS256', typ: 'jwt' })
+              ).toString('base64')
+              let body = Buffer.from(JSON.stringify(user)).toString(
+                'base64'
+              )
+              let signature = crypto
+                .createHmac('SHA256', this.tokenKey)
+                .update(`${head}.${body}`)
+                .digest('base64')
+        
+              return res.status(200).json({
+                id: user.id,
+                login: user.login,
+                name: user.name,
+                lastName:user.lastName,
+                allAuto:user.allAuto,
+                inWorkAuto:user.inWorkAuto,
+                token: `${head}.${body}.${signature}`,
+              })
+            }
+          }
+        
+          return res.status(404).json({ message: 'User not found' })
+        })
     }
 
-    connect(dbConnection.url, dbConnection.options);
-  }
+    private init(){
+     
+        this.createApi();
+      
 
-  private initializeMiddlewares() {
-    this.app.use(morgan(config.get('log.format'), { stream }));
-    this.app.use(cors({ origin: config.get('cors.origin'), credentials: config.get('cors.credentials') }));
-    this.app.use(hpp());
-    this.app.use(helmet());
-    this.app.use(compression());
-    this.app.use(express.json());
-    this.app.use(express.urlencoded({ extended: true }));
-    this.app.use(cookieParser());
-  }
-
-  private initializeRoutes(routes: Routes[]) {
-    routes.forEach(route => {
-      this.app.use('/', route.router);
-    });
-  }
-
-  private initializeSwagger() {
-    const options = {
-      swaggerDefinition: {
-        info: {
-          title: 'REST API',
-          version: '1.0.0',
-          description: 'Example docs',
-        },
-      },
-      apis: ['swagger.yaml'],
-    };
-
-    const specs = swaggerJSDoc(options);
-    this.app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(specs));
-  }
-
-  private initializeErrorHandling() {
-    this.app.use(errorMiddleware);
-  }
+    }
 }
-
-export default App;

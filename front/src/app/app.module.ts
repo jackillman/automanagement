@@ -8,13 +8,15 @@ import { FormsModule } from '@angular/forms';
 
 import { ContactUsComponent } from './components/contact-us/contact-us.component';
 import { APP_SERVICES_PROVIDERS } from './app.barel';
+import { HttpClientModule } from '@angular/common/http';
+import { AuthGuard } from './guards/auth.guard';
 
 @NgModule({
   declarations: [
     AppComponent,
 
     ContactUsComponent,
-
+ 
 
   ],
   imports: [
@@ -22,10 +24,10 @@ import { APP_SERVICES_PROVIDERS } from './app.barel';
     AppRoutingModule,
     BrowserAnimationsModule,
     FormsModule,
-    
+    HttpClientModule
 
   ],
-  providers: [...APP_SERVICES_PROVIDERS],
+  providers: [...APP_SERVICES_PROVIDERS,AuthGuard],
   bootstrap: [AppComponent]
 })
 export class AppModule { }

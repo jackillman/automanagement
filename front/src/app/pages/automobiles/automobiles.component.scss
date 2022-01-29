@@ -1,0 +1,18 @@
+.automobiles {
+    display: flex;
+    justify-content: center;
+    table {
+        width: 100%;
+        td.mat-column-photo {
+            img {
+                width:100px
+            }
+        }
+        td.mat-column-shared {
+            img {
+                width:20px;
+                cursor: pointer;
+            }
+        }
+    }
+}

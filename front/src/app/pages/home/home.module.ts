@@ -21,7 +21,7 @@ import { CalculatorModule } from 'src/app/components/calculator/calculator.modul
 })
 export class HomeModule {
   constructor(){
-    console.log("home module")
+   // console.log("home module")
   }
   
  }

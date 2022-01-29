@@ -1,0 +1,32 @@
+
+.header {
+    display: flex;
+    justify-content: center;
+    background: #000;
+    height: 220px;
+    .left {
+        img {
+            box-shadow: 3px 0px 20px #575757;
+           
+        }
+    }
+    .right {
+       
+        width: 300px;
+        padding: 10px 0;
+        display: flex;
+        justify-content: center;
+        flex-direction: column;
+        .account-info{
+            margin: 20px 0;
+        }
+        p {
+            font-size: 14px;
+            color: #fff;
+        }
+        a {
+            font-size: 12px;
+            color: #fff;
+        }
+    }
+}

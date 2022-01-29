@@ -6,7 +6,8 @@
   "license": "ISC",
   "scripts": {
     "start": "npm run build && cross-env NODE_ENV=production node dist/server.js",
-    "dev": "cross-env NODE_ENV=development nodemon",
+    "dev1": "cross-env NODE_ENV=development nodemon",
+    "dev": "ts-node-dev --respawn --transpile-only ./src/server.ts --local",
     "build": "tsc && tsc-alias",
     "build:swc": "swc src -d dist --source-maps --copy-files",
     "test": "jest --forceExit --detectOpenHandles",
@@ -23,6 +24,7 @@
     "config": "^3.3.6",
     "cookie-parser": "^1.4.5",
     "cors": "^2.8.5",
+    "crypto": "^1.0.1",
     "dotenv": "^10.0.0",
     "envalid": "^7.1.0",
     "express": "^4.17.1",
@@ -33,6 +35,7 @@
     "morgan": "^1.10.0",
     "swagger-jsdoc": "^6.0.0",
     "swagger-ui-express": "^4.1.6",
+    "ts-node-dev": "^1.1.8",
     "winston": "^3.3.3",
     "winston-daily-rotate-file": "^4.5.5"
   },

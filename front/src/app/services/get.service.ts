@@ -10,40 +10,50 @@ import { HandleErrorService } from "./handleError.service";
 
 @Injectable({providedIn:'root'})
 export class GetService {
-    private isBrowser: boolean;
 
-    constructor(@Inject(PLATFORM_ID) private platformId: Object,
+    constructor(
                 private http: HttpClient,
                 private HES: HandleErrorService,
                private GS:GlobalService
                 ) {
-        this.isBrowser = isPlatformBrowser(platformId);
+  
     }
 
     public getItem<I>(itemName: string): Observable<I|never> {
 
         // if (!this.isBrowser) {
-
+       // console.log(`itemName`,this.GS.SOURCE[`${itemName}`])
     
             return this.http.get<I>(this.GS.SOURCE[`${itemName}`])
                 .pipe(
-                 //    tap((res: I) => { console.log(`${itemName} I: `, res); }),
+                    //tap((res) => { console.log(`${itemName} I: `, res); }),
                     tap((res: I) => {
 
                         return <I> res;
                     }),
                     // tap((res: I) => this.transferState.set(ITEM_KEY, res)),
-                    catchError((error: HttpErrorResponse|HttpResponse<any>) => <never> this.HES.handleError(error, this.isBrowser))
+                    catchError((error: HttpErrorResponse|HttpResponse<any>) => <never> this.HES.handleError(error))
                 );
 
     }
+    public tryAuth<I>(data:string): Observable<I|never>{
+        return this.http.post<I>(this.GS.SOURCE[`auth`],data)
+            .pipe(
+                tap((res) => { console.log(`auth I: `, res); }),
+                // tap((res: I) => {
 
+                //     return <I> res;
+                // }),
+                // tap((res: I) => this.transferState.set(ITEM_KEY, res)),
+                catchError((error: HttpErrorResponse|HttpResponse<any>) => <never> this.HES.handleError(error))
+            );
+    }
     public getLocalJSON<I>(itemName: string): Observable<I|never> {
      
         return this.http.get<I>(`${this.GS.SOURCE[itemName]}`)
             .pipe(
               //  tap((res: I) => { console.log(`${itemName} I: `, res); }),
-                catchError((error: HttpErrorResponse|HttpResponse<any>) => <never> this.HES.handleError(error, this.isBrowser))
+                catchError((error: HttpErrorResponse|HttpResponse<any>) => <never> this.HES.handleError(error))
             );
     };
 

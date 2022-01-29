@@ -1,6 +1,7 @@
 import { NgModule } from '@angular/core';
 import { RouterModule, Routes } from '@angular/router';
 import { Redirect301Component } from './components/redirect301/redirect301.compoenent';
+import { AuthGuard } from './guards/auth.guard';
 
 const routes: Routes = [
   { path: 'home',             redirectTo: '', pathMatch: 'full' },
@@ -12,7 +13,7 @@ const routes: Routes = [
   },
   {
     path: 'dashboard',
- 
+    canActivate: [AuthGuard],
     data: {page: `dashboard`},
     loadChildren: () => import('./pages/dashboard/dashboard.module').then(m => m.DashboardModule),
   },
