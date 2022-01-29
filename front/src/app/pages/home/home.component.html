@@ -9,36 +9,24 @@
     </ng-container> -->
     <div class="panel-item auth">
         <div class="inner-block">
-            <form class="auth-form">
+            <form class="auth-form" [formGroup]="profileForm" (ngSubmit)="onSubmit()">
                 <mat-form-field  appearance="fill">
-                  <mat-label>Email</mat-label>
-                  <input type="email" matInput [formControl]="emailFormControl"
-                         placeholder="Ex. pat@example.com">
-                  <mat-hint>Errors appear instantly!</mat-hint>
-                  <mat-error *ngIf="emailFormControl.hasError('email') && !emailFormControl.hasError('required')">
-                    Please enter a valid email address
-                  </mat-error>
-                  <mat-error *ngIf="emailFormControl.hasError('required')">
-                    Email is <strong>required</strong>
-                  </mat-error>
+                  <mat-label>Login</mat-label>
+                  <input type="text" matInput formControlName="login"
+                         placeholder="Login">
+
                 </mat-form-field>
 
                 <mat-form-field  appearance="fill">
                     <mat-label>Password</mat-label>
-                    <input type="text" matInput [formControl]="passwordFormControl"
+                    <input type="text" matInput formControlName="password"
                            placeholder="password">
-                    <mat-hint>Errors appear instantly!</mat-hint>
-                    <mat-error *ngIf="passwordFormControl.hasError('password') && !passwordFormControl.hasError('required')">
-                      Please enter a valid email address
-                    </mat-error>
-                    <mat-error *ngIf="passwordFormControl.hasError('required')">
-                      Password is <strong>required</strong>
-                    </mat-error>
+
                   </mat-form-field>
                   <div class="example-button-row">
 
                     <button mat-raised-button color="primary" >Войти</button>
-                    <a routerLink="/dashboard" routerLinkActive="active">dashboard</a>
+                    <!-- <a routerLink="/dashboard" routerLinkActive="active">dashboard</a> -->
                   </div>
               </form>
         </div>

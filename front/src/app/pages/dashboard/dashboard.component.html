@@ -1,32 +1,46 @@
 
 <div class="header">
-    <div class="left">
-            <img src="/assets/images/shared/copart.png" alt="">
-    </div>
-    <div class="right">
-        <p>Ольвач Денис</p>
-        <p>Всего авто 10</p>
-        <p>В работе 2</p>
+    <div class="container">
+        <div class="left">
+            <img src="/assets/images/road.gif" alt="">
+     
+        </div>
+        <div class="right">
+            
+            <div class="account-info">
+                
+                
+                <p>Ольвач Денис</p>
+                <p>Всего авто 10</p>
+                <p>В работе 2</p>
+            </div>
+            <a [routerLink]="['']">Вернуться</a>
+        </div>
     </div>
 </div>
-<nav>
-    <ul>
-        <li>
-          
-            <a [routerLink]="['automobiles']">automobiles</a>
-        </li>
-        <li>
-        
-            <a [routerLink]="['finances']">finances</a>
-        </li>
-        <li>
-            <a [routerLink]="['calculators']">калькуляторы</a>
-           
-        </li>
-        <li>
-            <a [routerLink]="['clients']">clients</a>
-          
-        </li>
-    </ul>
+<nav class="nav">
+    <div class="container">
+        <ul>
+            <li>
+              
+                <a [routerLink]="['automobiles']">automobiles</a>
+            </li>
+            <li>
+            
+                <a [routerLink]="['finances']">finances</a>
+            </li>
+            <li>
+                <a [routerLink]="['calculators']">калькуляторы</a>
+               
+            </li>
+            <li>
+                <a [routerLink]="['clients']">clients</a>
+              
+            </li>
+        </ul>
+    
+    </div>
 </nav>
+
 <router-outlet></router-outlet>
+    
