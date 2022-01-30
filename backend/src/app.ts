@@ -36,7 +36,9 @@ export class Application {
       password:String,
       allAuto:Number,
       inWorkAuto:Number,
-      item_id:{ type : Number , unique : true, required : true }
+      item_id:{ type : Number , unique : true, required : true },
+      carList:{ type : Array , "default" : [{item_id:String,rights:String}] },
+      role:String
     }, {versionKey: false})
     private data:any
     constructor(data:any){
@@ -76,7 +78,12 @@ export class Application {
     public  getUsers() {
       const filePath:string = path.join(__dirname, './DATA/API/users.json')
       return this.fsHandlerApp(filePath);
-   
+    //   const Users = this.data.mongoose.model("Users", this.userScheme);
+    //   Users.find({}, function(err, users){
+
+    //     if(err) return console.log(err);
+    //     return users
+    // });
   }
   public getAllUsers(res) {
 
@@ -125,6 +132,8 @@ export class Application {
         allAuto:+req.body.allAuto,
         inWorkAuto: +req.body.inWorkAuto,
         name:req.body.name,
+        role:req.body.role,
+        carList:req.body.carList,
         item_id:lastItem[0].item_id+1
       })
 
@@ -153,7 +162,9 @@ export class Application {
         { $set:  obj
           
         },     // параметр обновления
-      
+        {
+          new: true
+        },
         function(err, result){
               
            
@@ -161,6 +172,7 @@ export class Application {
         }
     );
   }
+
   public deleteUser(req,res) {
     const Users = this.data.mongoose.model("Users", this.userScheme);
     const item_id = +req.body.item_id;
@@ -229,9 +241,79 @@ export class Application {
   }
 
 
+  public async editCar(req,res) {
+    if(!req.body) return res.sendStatus(400);
+
+      const Cars = this.data.mongoose.model("Cars", this.carScheme);
+      // const item_id = +req.body.item_id;
+      const filter = {item_id:+req.body.item_id}
+      const obj = {...req.body}
+
+      Cars.findOneAndUpdate(
+        filter,              // критерий выборки
+        { $set:  obj },     // параметр обновления
+        {
+          new: true
+        },
+        function(err, result){
+              
+           
+            res.send({status:1,data:result }) 
+        }
+    );
+  }
+  
+
+  public deleteCar(req,res) {
+    const Cars = this.data.mongoose.model("Cars", this.carScheme);
+    const item_id = +req.body.item_id;
+   
+    Cars.findOneAndDelete({item_id:item_id}, function(err, car){
+        
+        if(err) return console.log(err);
+        if(car) {
+          res.send({status:1,data:car,message:'Car was deleted'});
+        } else {
+          res.send({
+                  status: 0,
+                  data: null,
+                  message:`Такого Авто не существует`
+                });
+        }
+        
+    });
+
+  }
 
 
+  public searchCarsByIds(req,res) {
+  
+    const Cars = this.data.mongoose.model("Cars", this.carScheme);
+    const carList = req.body.carList;
+  
+    const ids = carList.map(el=>el.item_id)
+   
+    Cars.find(  {item_id: {
+      $in: ids
+    }
+  }, function(err, car){
+        
+        if(err) return console.log(err);
+        console.log(car)
+        if(car) {
+          res.send({status:1,data:car});
+        } else {
+          res.send({
+                  status: 0,
+                  data: [],
+                  message:`Нет авто`
+                });
+         
+        }
+        
+    });
 
+  }
 
 
 
@@ -247,6 +329,11 @@ export class Application {
        
         this.data.app.get('/api/v1/cars',  (req:express.Request ,res:express.Response,next:Function)=> this.getAllCars(res));
         this.data.app.post('/api/v1/car',(req:express.Request ,res:express.Response,next:Function)=> this.createCar(req,res))
+        this.data.app.delete('/api/v1/car',(req:express.Request ,res:express.Response,next:Function)=> this.deleteCar(req,res))
+        this.data.app.put('/api/v1/car',(req:express.Request ,res:express.Response,next:Function)=> this.editCar(req,res))
+
+
+        this.data.app.post('/api/v1/carsearch',(req:express.Request ,res:express.Response,next:Function)=> this.searchCarsByIds(req,res))
 
 
         this.data.app.post('/api/v1/auth/', async (req, res) => {
