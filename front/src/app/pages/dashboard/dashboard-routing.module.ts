@@ -1,6 +1,7 @@
 import { Routes, RouterModule } from '@angular/router';
 import { NgModule } from '@angular/core';
 import { DashboardComponent } from './dashboard.component';
+import { CreatorGuard } from 'src/app/guards/creator.guard';
 
 
 const routes: Routes = [
@@ -24,6 +25,14 @@ const routes: Routes = [
                 data: { page: `users` },
                 loadChildren: () => import('../automobiles/automobiles.module').then((m) => m.AutomobilesModule),
             },
+
+            {
+                path: 'client-base',
+                canActivate: [CreatorGuard],
+                data: { page: `client-base` },
+                loadChildren: () => import('../client-base/client.base.module').then((m) => m.ClientBaseModule),
+            },
+            
             // {
             //     path: ':project/roles',
             //     // canActivate: [AuthCheckGuard],

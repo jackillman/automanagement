@@ -8,16 +8,16 @@
               
                 <a [routerLink]="['automobiles']">automobiles</a>
             </li>
-            <li>
+            <!-- <li>
             
                 <a [routerLink]="['finances']">finances</a>
-            </li>
+            </li> -->
             <li>
                 <a [routerLink]="['calculators']">калькуляторы</a>
                
             </li>
-            <li>
-                <a [routerLink]="['clients']">clients</a>
+            <li *ngIf="SS.currentUser.isCreator">
+                <a [routerLink]="['client-base']">client-base</a>
               
             </li>
         </ul>
