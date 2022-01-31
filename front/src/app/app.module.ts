@@ -8,8 +8,9 @@ import { FormsModule } from '@angular/forms';
 
 import { ContactUsComponent } from './components/contact-us/contact-us.component';
 import { APP_SERVICES_PROVIDERS } from './app.barel';
-import { HttpClientModule } from '@angular/common/http';
+import { HttpClientModule, HTTP_INTERCEPTORS } from '@angular/common/http';
 import { AuthGuard } from './guards/auth.guard';
+import { AuthInterceptorService } from './guards/auth-interceptor';
 
 @NgModule({
   declarations: [
@@ -28,7 +29,8 @@ import { AuthGuard } from './guards/auth.guard';
     HttpClientModule
 
   ],
-  providers: [...APP_SERVICES_PROVIDERS,AuthGuard],
+  providers: [...APP_SERVICES_PROVIDERS,AuthGuard,
+        { provide: HTTP_INTERCEPTORS, useClass: AuthInterceptorService, multi: true }],
   bootstrap: [AppComponent]
 })
 export class AppModule { }

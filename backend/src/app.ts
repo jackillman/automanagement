@@ -4,9 +4,9 @@ import express  from 'express';
 import  fs  from "fs";
 import path from 'path';
 const crypto = require('crypto')
-
+const jwt = require('express-jwt');
 import { Schema } from 'mongoose';
-
+const jsonwebtoken = require('jsonwebtoken');
 // import { User } from './models/user';
 
 
@@ -321,13 +321,13 @@ export class Application {
 
     private createApi(){
   
-        
+
         this.data.app.get('/api/v1/users', (req:express.Request ,res:express.Response,next:Function)=> this.getAllUsers(res));
         this.data.app.post('/api/v1/user',(req:express.Request ,res:express.Response,next:Function)=> this.createUser(req,res))
         this.data.app.delete('/api/v1/user',(req:express.Request ,res:express.Response,next:Function)=> this.deleteUser(req,res))
         this.data.app.put('/api/v1/user',(req:express.Request ,res:express.Response,next:Function)=> this.editUser(req,res))
        
-        this.data.app.get('/api/v1/cars',  (req:express.Request ,res:express.Response,next:Function)=> this.getAllCars(res));
+        this.data.app.get('/api/v1/cars', jwt({ secret:this.tokenKey,algorithms: ['HS256'] }),  (req:express.Request ,res:express.Response,next:Function)=> this.getAllCars(res));
         this.data.app.post('/api/v1/car',(req:express.Request ,res:express.Response,next:Function)=> this.createCar(req,res))
         this.data.app.delete('/api/v1/car',(req:express.Request ,res:express.Response,next:Function)=> this.deleteCar(req,res))
         this.data.app.put('/api/v1/car',(req:express.Request ,res:express.Response,next:Function)=> this.editCar(req,res))
@@ -345,17 +345,19 @@ export class Application {
               req.body.login === user.login &&
               req.body.password === user.password
             ) {
-              let head = Buffer.from(
-                JSON.stringify({ alg: 'HS256', typ: 'jwt' })
-              ).toString('base64')
-              let body = Buffer.from(JSON.stringify(user)).toString(
-                'base64'
-              )
-              let signature = crypto
-                .createHmac('SHA256', this.tokenKey)
-                .update(`${head}.${body}`)
-                .digest('base64')
-        
+              // let head = Buffer.from(
+              //   JSON.stringify({ alg: 'HS256', typ: 'jwt',  expiresIn: '15m' })
+              // ).toString('base64')
+              // let body = Buffer.from(JSON.stringify(user)).toString(
+              //   'base64'
+              // )
+              // let signature = crypto
+              //   .createHmac('SHA256', this.tokenKey)
+              //   .update(`${head}.${body}`)
+              //   .digest('base64')
+              //   console.log(`signature`,signature)
+                const token = jsonwebtoken.sign(user, this.tokenKey);
+                console.log(`token`,token)
               return res.status(200).json({
                 id: user.id,
                 login: user.login,
@@ -364,7 +366,8 @@ export class Application {
                 allAuto:user.allAuto,
                 inWorkAuto:user.inWorkAuto,
                 isCreator:user.isCreator,
-                token: `${head}.${body}.${signature}`,
+                token
+              //  token: `${head}.${body}.${signature}`,
               })
             }
           }

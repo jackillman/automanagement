@@ -19,8 +19,11 @@ export class DashboardComponent implements OnInit {
    
 
         ).subscribe( (res:any)=>{
-     
-        this.SS.carsList = [...res];
+          console.log(`res`,res)
+          if(res.status===1) {
+            this.SS.carsList = [...res.data];
+          }
+       
         this.SS.isCarsLoaded = false
       })
     }

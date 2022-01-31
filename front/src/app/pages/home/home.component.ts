@@ -59,6 +59,9 @@ export class HomeComponent implements OnInit {
       (res:any)=>{
         console.log(res)
         if(res){
+          if (res['token']) {
+            localStorage.setItem('token', res['token']); //token here is stored in a local storage
+          }
           this.SS.currentUser = res;
           this.SS.isAuth = true
           this.router.navigate(['/dashboard'])

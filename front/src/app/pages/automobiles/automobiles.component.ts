@@ -25,7 +25,7 @@ export class AutomobilesComponent implements OnInit {
   ngOnInit(): void {
   //  console.log(JSON.stringify(this.dataSource))
   }
-  displayedColumns: string[] = ['position','photo','purchaseDate', 'auction', 'model', 'vin','price','port','title','container','customer','status','shared'];
+  displayedColumns: string[] = ['position','photo','purchaseDate', 'auction', 'model', 'vin','price','port','title','container','customer','status','shared','edit'];
  // dataSource = ELEMENT_DATA;
   
  
