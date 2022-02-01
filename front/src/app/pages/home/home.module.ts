@@ -6,7 +6,7 @@ import {MatInputModule} from '@angular/material/input';
 import {MatButtonModule} from '@angular/material/button';
 import {MatDialogModule} from '@angular/material/dialog';
 import { ReactiveFormsModule } from '@angular/forms';
-import { CalculatorModule } from 'src/app/components/calculator/calculator.module';
+import { CalculatorModule } from '../../components/dialogs/calculator/calculator.module';
 @NgModule({
   declarations: [HomeComponent],
   imports: [

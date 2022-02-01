@@ -2,10 +2,10 @@ import { Component, OnInit } from '@angular/core';
 import {FormControl, FormGroup, FormGroupDirective, NgForm, Validators} from '@angular/forms';
 import { MatDialog } from '@angular/material/dialog';
 import { Router } from '@angular/router';
-import { CalculatorComponent } from 'src/app/components/calculator/calculator.component';
-import { ContactUsComponent } from 'src/app/components/contact-us/contact-us.component';
-import { GetService } from 'src/app/services/get.service';
-import { StateService } from 'src/app/services/state.service';
+import { CalculatorComponent } from '../../components/dialogs/calculator/calculator.component';
+import { ContactUsComponent } from '../../components/dialogs/contact-us/contact-us.component';
+import { GetService } from '../../services/get.service';
+import { StateService } from '../../services/state.service';
 @Component({
   selector: 'app-home',
   templateUrl: './home.component.html',
@@ -32,6 +32,10 @@ export class HomeComponent implements OnInit {
               }
 
   ngOnInit(): void {
+    if(localStorage.getItem('token') ) {
+      this.SS.isAuth = true
+      this.router.navigate(['/dashboard/automobiles'])
+    }
   }
   openCalculatorDialog() {
     const dialogRef = this.dialog.open(CalculatorComponent, {

@@ -1,0 +1,23 @@
+form {
+    display: flex;
+    flex-wrap: wrap;
+    mat-form-field {
+        
+        display: flex;
+        width: 350px;
+        max-width: 350px;
+        .mat-form-field-wrapper {
+            background:red;
+            width: 100%!important;
+            .mat-form-field-flex {
+                display: flex;  
+            }
+            .mat-form-field-infix {
+                width: 100%;
+            }
+        }
+
+        
+    }
+
+}

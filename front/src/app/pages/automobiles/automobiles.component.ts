@@ -1,4 +1,6 @@
 import { Component, OnInit } from '@angular/core';
+import { MatDialog } from '@angular/material/dialog';
+import { CarEditComponent } from 'src/app/components/dialogs/car-edit/car-edit.component';
 import { StateService } from 'src/app/services/state.service';
 // export interface PeriodicElement {
 //   name: string;
@@ -20,7 +22,7 @@ const ELEMENT_DATA: any[] = [
 })
 export class AutomobilesComponent implements OnInit {
 
-  constructor(public SS:StateService) { }
+  constructor(public SS:StateService,public dialog:MatDialog) { }
 
   ngOnInit(): void {
   //  console.log(JSON.stringify(this.dataSource))
@@ -31,5 +33,16 @@ export class AutomobilesComponent implements OnInit {
  
   add(item:any) {
     console.log(item)
+  }
+  openEditDialog(data:any) {
+    const dialogRef = this.dialog.open(CarEditComponent, {
+      height: '1000px',
+      width: '800px',
+      data
+    });
+
+    dialogRef.afterClosed().subscribe(result => {
+      console.log(`Dialog result: ${result}`);
+    });
   }
 }

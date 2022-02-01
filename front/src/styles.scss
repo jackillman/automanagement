@@ -13,3 +13,10 @@ body { margin: 0; font-family: Roboto, "Helvetica Neue", sans-serif; }
     justify-content: space-between;
     width: 1600px;
 }
+mat-form-field {
+    padding: 0 10px;
+}
+.mat-form-field-wrapper {
+    width: 100%;
+    
+}

@@ -242,6 +242,7 @@ export class Application {
 
 
   public async editCar(req,res) {
+    console.log(`req.body`,req.body)
     if(!req.body) return res.sendStatus(400);
 
       const Cars = this.data.mongoose.model("Cars", this.carScheme);
