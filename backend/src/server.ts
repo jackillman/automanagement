@@ -4,7 +4,7 @@ import express  from 'express';
 const cors = require('cors')
 // import bodyParser  from 'body-parser'
 import path from 'path';
-const uri = "mongodb+srv://car-app:car-app@cluster0.w1bms.mongodb.net/test?retryWrites=true&w=majority";
+const uri = "mongodb+srv://car-app:car-app@cluster0.w1bms.mongodb.net/automanagement?retryWrites=true&w=majority";
 // const client = new MongoClient(uri, { useNewUrlParser: true, useUnifiedTopology: true });
 const mongoose = require("mongoose");
 import { ENV } from './env/environment';
@@ -52,8 +52,8 @@ let PORT = ENV.PORT;
 
 
 
-
-mongoose.connect("mongodb://localhost:27017/cars-app", { useUnifiedTopology: true, useNewUrlParser: true, useFindAndModify: false ,useCreateIndex: true}, function(err){
+const uriLocal = "mongodb://localhost:27017/cars-app" 
+mongoose.connect(uri, { useUnifiedTopology: true, useNewUrlParser: true, useFindAndModify: false ,useCreateIndex: true}, function(err){
     if(err) return console.log(err);
 	const app: express.Application = express();
 
@@ -82,22 +82,10 @@ mongoose.connect("mongodb://localhost:27017/cars-app", { useUnifiedTopology: tru
   // console.log(`__dirname + 'public'`,__dirname + '/public')
   app.use(express.static(__dirname));
   
-  function getParsedFullUrl(req: express.Request): Url {
-	  return URL.parse(getFullUrl(req), true);
-  };
-  function getFullUrl(req: express.Request): string {
-	  return `${req.protocol}://${req.get('host')}${req.originalUrl}`;
-  };
+
   
   
-  
-  
-  
-  function normalizeUrl(url: string): string {
-	  const URL: string = `${url}/`.replace(/\/{2,}/g, '/').replace(/:\//, '://');
-	  return /\?\w+=/.test(URL) ? URL.replace(/\/$/, '') : URL;
-  }
-  
+
   
   http.listen(PORT, function(){
 	  console.log("Сервер ожидает подключения...",PORT);

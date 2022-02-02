@@ -69,5 +69,17 @@ export class GetService {
                 catchError((error: HttpErrorResponse|HttpResponse<any>) => <never> this.HES.handleError(error))
             );
     }
+    public createItem<I>(itemName: string,data:any): Observable<I|never> {
+        console.log(`data`,data)
+        return this.http.post<I>(this.GS.SOURCE[itemName],data)
+            .pipe(
+                tap((res) => { console.log(`create I: `, res); }),
+                // tap((res: I) => {
 
+                //     return <I> res;
+                // }),
+                // tap((res: I) => this.transferState.set(ITEM_KEY, res)),
+                catchError((error: HttpErrorResponse|HttpResponse<any>) => <never> this.HES.handleError(error))
+            );
+    }
 }

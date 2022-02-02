@@ -7,7 +7,7 @@ import {MatButtonModule} from '@angular/material/button';
 import {MatDialogModule} from '@angular/material/dialog';
 import { ReactiveFormsModule } from '@angular/forms';
 import {MatTableModule} from '@angular/material/table';
-import { CarEditModule } from 'src/app/components/dialogs/car-edit/car-edit.module';
+import { CarDialogModule } from '../../components/dialogs/car-dialog/car-dialog.module';
 
 @NgModule({
   declarations: [AutomobilesComponent],
@@ -19,7 +19,7 @@ import { CarEditModule } from 'src/app/components/dialogs/car-edit/car-edit.modu
     MatDialogModule,
     ReactiveFormsModule,
     MatTableModule,
-    CarEditModule
+    CarDialogModule
   ]
 })
 export class AutomobilesModule {

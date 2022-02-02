@@ -89,7 +89,7 @@ export class Application {
 
       const Users = this.data.mongoose.model("Users", this.userScheme);
       Users.find({}, function(err, users){
-
+        console.log(`users`,users)
         if(err) return console.log(err);
         res.send({status: 1,data:users})
     });
@@ -98,8 +98,9 @@ export class Application {
   public getAllCars(res:express.Response) {
 
     const Cars = this.data.mongoose.model("Cars", this.carScheme);
+    console.log(`Cars`,Cars)
       Cars.find({}, function(err, cars){
-
+        console.log(`cars=`,cars)
         if(err) return console.log(err);
         res.send({status: 1,data:cars})
     });
@@ -111,7 +112,7 @@ export class Application {
 
       const Users = this.data.mongoose.model("Users", this.userScheme);
       const foundedUser = await Users.findOne({login: req.body.login  })
-     
+      console.log(`foundedUser`,foundedUser)
       if(!!foundedUser) {
         res.send({
           status: 0,
@@ -196,8 +197,9 @@ export class Application {
 
 
   public async createCar(req,res) {
+    console.log(`req.body`,req.body)
     if(!req.body) return res.sendStatus(400);
-
+      
       const Cars = this.data.mongoose.model("Cars", this.carScheme);
       const foundedCar = await Cars.findOne({vin: req.body.vin  })
      
@@ -329,7 +331,7 @@ export class Application {
         this.data.app.put('/api/v1/user',(req:express.Request ,res:express.Response,next:Function)=> this.editUser(req,res))
        
         this.data.app.get('/api/v1/cars', jwt({ secret:this.tokenKey,algorithms: ['HS256'] }),  (req:express.Request ,res:express.Response,next:Function)=> this.getAllCars(res));
-        this.data.app.post('/api/v1/car',(req:express.Request ,res:express.Response,next:Function)=> this.createCar(req,res))
+        this.data.app.post('/api/v1/car', jwt({ secret:this.tokenKey,algorithms: ['HS256'] }) ,(req:express.Request ,res:express.Response,next:Function)=> this.createCar(req,res))
         this.data.app.delete('/api/v1/car',(req:express.Request ,res:express.Response,next:Function)=> this.deleteCar(req,res))
         this.data.app.put('/api/v1/car',(req:express.Request ,res:express.Response,next:Function)=> this.editCar(req,res))
 

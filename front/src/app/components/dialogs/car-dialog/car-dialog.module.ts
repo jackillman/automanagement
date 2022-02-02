@@ -2,8 +2,9 @@ import { CommonModule } from '@angular/common';
 import { Component, NgModule, OnInit } from '@angular/core';
 
 import {FormsModule,ReactiveFormsModule} from '@angular/forms';
+import { MatButtonModule } from '@angular/material/button';
 import { MatInputModule } from '@angular/material/input';
-import { CarEditComponent } from './car-edit.component';
+import { CarDialogComponent } from './car-dialog.component';
 
 
 @NgModule({
@@ -11,12 +12,12 @@ import { CarEditComponent } from './car-edit.component';
       CommonModule,
       ReactiveFormsModule,
       MatInputModule,
-
+      MatButtonModule,
       FormsModule
   ],
   declarations: [
 
-      CarEditComponent,
+      CarDialogComponent,
 
   ],
   entryComponents: [
@@ -24,6 +25,6 @@ import { CarEditComponent } from './car-edit.component';
   ]
 })
 
-export class CarEditModule {
+export class CarDialogModule {
  
 }
