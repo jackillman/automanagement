@@ -22,23 +22,12 @@ export class CarDialogComponent implements OnInit {
               public SS:StateService,
               public getService:GetService) { }
    
-    public carData = new FormGroup({
-      photo: new FormControl(this.data ? this.data.photo : ''),
-      purchaseDate: new FormControl(this.data ? this.data.purchaseDate : ''),
-      auction: new FormControl(this.data.auction),
-      model: new FormControl(this.data.model),
-      vin: new FormControl(this.data.vin),
-      price: new FormControl(this.data.price),
-      port: new FormControl(this.data.port),
-      title: new FormControl(this.data.title),
-      container: new FormControl(this.data.container),
-      customer: new FormControl(this.data.customer),
-      status: new FormControl(this.data.status),
-
-    });
+    public carData!:FormGroup;
     public ngOnInit(): void {
       console.log(`this.data`,this.data)
+
       if(this.data.mode==='edit') {
+
         this.carData = new FormGroup({
           photo: new FormControl(this.data.photo),
           purchaseDate: new FormControl(this.data.purchaseDate),
@@ -54,6 +43,7 @@ export class CarDialogComponent implements OnInit {
     
         });
       } else if(this.data.mode==='create') {
+
         this.carData = new FormGroup({
           photo: new FormControl(``),
           purchaseDate: new FormControl(``),
@@ -107,7 +97,7 @@ export class CarDialogComponent implements OnInit {
       .subscribe(
         (res:any)=>{
           console.log(res)
-  
+          request$.unsubscribe()
         }
       )
     }
@@ -140,7 +130,8 @@ export class CarDialogComponent implements OnInit {
       .subscribe(
         (res:any)=>{
           console.log(res)
-  
+           this.dialogRef.close();
+          request$.unsubscribe()
         }
       )
     }
@@ -150,5 +141,37 @@ export class CarDialogComponent implements OnInit {
     const item = {...this.carData.value}
     console.log(`item`,item)
   }
+  public removeCar(data:any) {
+    console.log('remove')
+    const request$ = this.getService.removeItem(`car`,data.item_id).pipe(
+      tap(data => console.log(data) ),
+      switchMap( (data:any ) => {
+          if(data) {
+            console.log(data)
+            this.SS.isCarsLoaded = false
+             return this.getService.getItem('cars').pipe(
+                tap( (res:any) => {
+  
+                  this.SS.carsList = [...res.data];
+                  this.SS.isCarsLoaded = true
+                  console.log(res)
+                }),
+                  
+                )
+          } else {
+            return of(false)
+          }
 
+              
+
+      })
+    )
+    
+    .subscribe(
+      (res:any)=>{
+        console.log(res)
+        this.dialogRef.close();
+      }
+    )
+  }
 }

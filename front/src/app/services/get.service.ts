@@ -82,4 +82,17 @@ export class GetService {
                 catchError((error: HttpErrorResponse|HttpResponse<any>) => <never> this.HES.handleError(error))
             );
     }
+    public removeItem<I>(itemName: string,id:number): Observable<I|never> {
+        // console.log(`data`,data)
+        return this.http.delete<I>(`${this.GS.SOURCE[itemName]}/${id}`)
+            .pipe(
+                tap((res) => { console.log(`create I: `, res); }),
+                // tap((res: I) => {
+
+                //     return <I> res;
+                // }),
+                // tap((res: I) => this.transferState.set(ITEM_KEY, res)),
+                catchError((error: HttpErrorResponse|HttpResponse<any>) => <never> this.HES.handleError(error))
+            );
+    }
 }

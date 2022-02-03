@@ -1,3 +1,5 @@
+/* eslint-disable prefer-const */
+/* eslint-disable prettier/prettier */
 
 //#!/usr/bin/env node
 import express  from 'express';
@@ -269,7 +271,9 @@ export class Application {
 
   public deleteCar(req,res) {
     const Cars = this.data.mongoose.model("Cars", this.carScheme);
-    const item_id = +req.body.item_id;
+    // const item_id = +req.body.item_id;
+    const item_id = +req.params.item_id;
+    
    
     Cars.findOneAndDelete({item_id:item_id}, function(err, car){
         
@@ -332,7 +336,7 @@ export class Application {
        
         this.data.app.get('/api/v1/cars', jwt({ secret:this.tokenKey,algorithms: ['HS256'] }),  (req:express.Request ,res:express.Response,next:Function)=> this.getAllCars(res));
         this.data.app.post('/api/v1/car', jwt({ secret:this.tokenKey,algorithms: ['HS256'] }) ,(req:express.Request ,res:express.Response,next:Function)=> this.createCar(req,res))
-        this.data.app.delete('/api/v1/car',(req:express.Request ,res:express.Response,next:Function)=> this.deleteCar(req,res))
+        this.data.app.delete('/api/v1/car/:item_id',(req:express.Request ,res:express.Response,next:Function)=> this.deleteCar(req,res))
         this.data.app.put('/api/v1/car',(req:express.Request ,res:express.Response,next:Function)=> this.editCar(req,res))
 
 

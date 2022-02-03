@@ -1,23 +1,38 @@
-form {
+.dialog-wrapper {
+    height: 100%;
     display: flex;
-    flex-wrap: wrap;
-    mat-form-field {
-        
+    flex-direction: column;
+    .delete-btns-block {
+        margin-top: auto;
         display: flex;
-        width: 350px;
-        max-width: 350px;
-        .mat-form-field-wrapper {
-            
-            width: 100%!important;
-            .mat-form-field-flex {
-                display: flex;  
-            }
-            .mat-form-field-infix {
-                width: 100%;
-            }
+        justify-content: space-between;
+        align-items: center;
+        button {
+            width: 110px;
         }
-
-        
     }
-
+    form {
+        display: flex;
+        flex-wrap: wrap;
+        mat-form-field {
+            
+            display: flex;
+            width: 350px;
+            max-width: 350px;
+            .mat-form-field-wrapper {
+                
+                width: 100%!important;
+                .mat-form-field-flex {
+                    display: flex;  
+                }
+                .mat-form-field-infix {
+                    width: 100%;
+                }
+            }
+    
+            
+        }
+    
+    }
+    
 }

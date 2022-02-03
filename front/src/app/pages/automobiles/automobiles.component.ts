@@ -37,8 +37,8 @@ export class AutomobilesComponent implements OnInit {
   openDialog(mode:string,data?:any) {
     console.log(`mode`,mode)
     const dialogRef = this.dialog.open(CarDialogComponent, {
-      height: '600px',
-      width: '800px',
+      height: mode === 'delete' ? '260px' : '600px' ,
+      width: mode === 'delete' ? '300px' : '800px'  ,
       data:{...data, mode},
       
     });
