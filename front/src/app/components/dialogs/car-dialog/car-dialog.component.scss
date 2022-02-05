@@ -29,10 +29,17 @@
                     width: 100%;
                 }
             }
-    
+
             
         }
     
     }
     
+}
+.mat-select-panel-wrap {
+    mat-option {
+        .mat-opt-value {
+            margin: 0;
+        }
+    }
 }

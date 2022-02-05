@@ -40,7 +40,7 @@ export class UsersComponent implements OnInit {
   public isHimself(item_id:number):boolean {
     return this.SS.currentUser.item_id!==item_id
   } 
-  displayedColumns: string[] = ['login','name','lastName','email','isCreator', 'carList','role', 'allAuto', 'inWorkAuto','delete','edit'];
+  displayedColumns: string[] = ['login','name','lastName','email','isCreator', 'carList','role', 'allAuto', 'inWorkAuto','edit','delete'];
 
   public openDialog(mode:string,data?:any) {
     console.log(`mode`,mode)

@@ -81,7 +81,17 @@
                      placeholder="inWorkAuto">
       
           </mat-form-field>
-            <div class="example-button-row">
+          <ng-container *ngIf="data.mode==='create'">
+            <mat-form-field  appearance="fill">
+              <mat-label>password</mat-label>
+              <input type="text" matInput formControlName="password"
+                     placeholder="password">
+      
+          </mat-form-field>
+          </ng-container>
+          
+
+            <div class="button-row">
       
               <button mat-raised-button color="primary" >Сохранить</button>
            

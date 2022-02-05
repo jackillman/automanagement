@@ -30,17 +30,22 @@
                 width:100px
             }
         }
+        .icon {
+            width:20px;
+            cursor: pointer;
+            margin: 0 15px;
+        }
         td.mat-column-delete {
-            img {
-                width:20px;
-                cursor: pointer;
-            }
+            width: 50px;
+    
         }
         td.mat-column-edit {
-            img {
-                width:20px;
-                cursor: pointer;
-            }
+            width: 50px;
+    
+        }
+        td.mat-column-connect {
+            width: 50px;
+    
         }
     }
 }

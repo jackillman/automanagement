@@ -13,7 +13,7 @@
           </div>
     
     </ng-container>
-    <ng-container *ngIf="data.mode !== 'delete'">
+    <ng-container *ngIf="data.mode === 'create' || data.mode === 'edit' ">
     
         <form class="auth-form" [formGroup]="carData" (ngSubmit)="submitForm()">
             <img src="/assets/images/" alt="">
@@ -86,12 +86,28 @@
                        placeholder="status">
         
             </mat-form-field>
+
+
+
               <div class="example-button-row">
         
                 <button mat-raised-button color="primary" >Сохранить</button>
              
               </div>
           </form>
+
+ 
     </ng-container>
-    
+    <ng-container *ngIf="data.mode==='connect'">
+
+        <mat-form-field appearance="fill">
+            <mat-label>К кому прикреплено авто для просмотра</mat-label>
+            <mat-select [formControl]="usersViewers" multiple [(ngModel)]="selectedViewers">
+              <mat-option *ngFor="let user of usersSelectList; let i =index" [value]="user.item_id" (onSelectionChange)="selectItem($event, user.item_id)">
+               <p class="mat-opt-value"><span>login:{{user.login}}</span> Фамилия:{{user.lastName}} </p> 
+                <!-- <mat-checkbox [checked]="selected === i" (change)="onChange(user);selected = i">   </mat-checkbox> -->
+              </mat-option>
+            </mat-select>
+          </mat-form-field>
+    </ng-container>
 </div>

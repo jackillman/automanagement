@@ -35,7 +35,7 @@ export class AutomobilesComponent implements OnInit {
   }
     this.cdr.detectChanges()
   }
-  displayedColumns: string[] = ['position','photo','purchaseDate', 'auction', 'model', 'vin','price','port','title','container','customer','status','delete','edit'];
+  displayedColumns: string[] = ['position','photo','purchaseDate', 'auction', 'model', 'vin','price','port','title','container','customer','status','edit','connect','delete'];
  // dataSource = ELEMENT_DATA;
   
  

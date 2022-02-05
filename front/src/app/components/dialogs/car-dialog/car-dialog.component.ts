@@ -4,6 +4,8 @@ import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
 import { of } from 'rxjs';
 import { switchMap } from 'rxjs/internal/operators/switchMap';
 import { tap } from 'rxjs/internal/operators/tap';
+import { IResponse } from 'src/app/interfaces/iresponse.interface';
+import { User } from 'src/app/models/user.model';
 import { GetService } from 'src/app/services/get.service';
 import { StateService } from 'src/app/services/state.service';
 
@@ -22,8 +24,16 @@ export class CarDialogComponent implements OnInit {
               public SS:StateService,
               public getService:GetService,
               public cdr:ChangeDetectorRef) { }
-   
+              foods: any[] = [
+                {value: 'steak-0', viewValue: 'Steak'},
+                {value: 'pizza-1', viewValue: 'Pizza'},
+                {value: 'tacos-2', viewValue: 'Tacos'},
+              ];
     public carData!:FormGroup;
+    public usersSelectList:any[] = [];
+    // public usersViewers = new FormControl();
+    public selectedViewers: number[] = []
+    public usersViewers = new FormControl([])
     public ngOnInit(): void {
     //  console.log(`this.data`,this.data)
 
@@ -41,7 +51,7 @@ export class CarDialogComponent implements OnInit {
           container: new FormControl(this.data.container),
           customer: new FormControl(this.data.customer),
           status: new FormControl(this.data.status),
-    
+          
         });
       } else if(this.data.mode==='create') {
 
@@ -57,12 +67,42 @@ export class CarDialogComponent implements OnInit {
           container: new FormControl(``),
           customer: new FormControl(``),
           status: new FormControl(``),
-    
+       
         });
+      } else if(this.data.mode==='connect'){
+        if(!this.SS.isUsersLoaded && this.SS.currentUser.role ==='admin' || this.SS.currentUser.role ==='superadmin') {
+          this.getService.getItem('users').pipe(
+       
+      
+            ).subscribe( (res:IResponse|any)=>{
+           
+              if(res.status===1) {
+                this.SS.userList = this.SS.setUserList(res.data);
+                this.usersSelectList = this.SS.userList.filter(el=>el.role!=='superadmin')
+               console.log(`this.SS.carsList`,this.SS.userList)
+               this.cdr.detectChanges()
+              }
+           
+            this.SS.isCarsLoaded = false
+          })
+        }
       }
+      
+     
+
+
+     
     }
 
+    public selectItem(ev:any,id:number){
+      console.log(ev,id)
+      console.log(ev.source.selected)
+      console.log(`this.data`,this.data)
+      if(ev.source.selected) {
 
+      }
+ 
+    }
   public onNoClick(): void {
     this.dialogRef.close();
   }

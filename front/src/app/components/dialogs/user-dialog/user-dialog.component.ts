@@ -4,6 +4,7 @@ import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
 import { of } from 'rxjs';
 import { switchMap } from 'rxjs/internal/operators/switchMap';
 import { tap } from 'rxjs/internal/operators/tap';
+import { IResponse } from 'src/app/interfaces/iresponse.interface';
 import { GetService } from 'src/app/services/get.service';
 import { StateService } from 'src/app/services/state.service';
 
@@ -54,10 +55,12 @@ export class UserDialogComponent implements OnInit {
           role: new FormControl(``),
           allAuto: new FormControl(``),
           inWorkAuto: new FormControl(``),
-   
+          password: new FormControl(`password`),
     
         });
       }
+
+ 
     }
 
 
@@ -81,13 +84,12 @@ export class UserDialogComponent implements OnInit {
     
                     this.SS.userList = this.SS.setUserList(res.data);
                     this.SS.isUsersLoaded = true;
-                    console.log(`item.item_id===this.SS.currentUser`,item.item_id,this.SS.currentUser)
+                  
                     if(item.item_id===this.SS.currentUser.item_id) {
                       const curUser = this.SS.userList.find(user=>user.item_id===item.item_id)
                       this.SS.currentUser = { ...this.SS.currentUser,...curUser }
                     }
-                    console.log(`this.SS.currentUser`,this.SS.currentUser)
-                    console.log(` this.SS.userList`, this.SS.userList)
+                 
                     this.cdr.detectChanges()
                   }),
                     

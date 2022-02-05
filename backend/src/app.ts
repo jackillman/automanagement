@@ -27,7 +27,8 @@ export class Application {
       container: Number,
       customer: String,
       status: String,
-      item_id:{ type : Number , unique : true, required : true }
+      item_id:{ type : Number , unique : true, required : true },
+      creator: {_id: String, login: String, item_id: Number, time_create: Number}
     }, {versionKey: false})
     private userScheme = new Schema({
       id_:String,
@@ -102,7 +103,7 @@ export class Application {
     const Cars = this.data.mongoose.model("Cars", this.carScheme);
    // console.log(`Cars`,Cars)
       Cars.find({}, function(err, cars){
-       // console.log(`cars=`,cars)
+      //  console.log(`cars=`,cars)
         if(err) return console.log(err);
         res.send({status: 1,data:cars})
     });
@@ -169,9 +170,21 @@ export class Application {
           new: true
         },
         function(err, result){
-              
-           
-            res.send({status:1,data:result}) 
+            // const {password,...item} = result     
+            const item = {
+              isCreator:result.isCreator,
+              login:result.login,
+              lastName: result.lastName,
+              email: result.email,
+              allAuto:result.allAuto,
+              inWorkAuto: result.inWorkAuto,
+              name:result.name,
+              role:result.role,
+              carList:result.carList,
+              item_id:result.item_id
+            }
+            console.log(item,`item`)
+            res.send({status:1,data:item}) 
         }
     );
   }
@@ -199,7 +212,8 @@ export class Application {
 
 
   public async createCar(req,res) {
-  //  console.log(`req.body`,req.body)
+    console.log(`req.body`,req)
+    console.log(`req.user`,req.user)
     if(!req.body) return res.sendStatus(400);
       
       const Cars = this.data.mongoose.model("Cars", this.carScheme);
@@ -213,7 +227,12 @@ export class Application {
         })
       } else {
         const lastItem = await Cars.find({}).sort({item_id: -1}).limit(1);
-      
+      const creator = {
+        _id:req.user._id,
+        login:req.user.login,
+        item_id:req.user.item_id,
+        time_create:Date.now()
+      }
      
 
       const car = new Cars({
@@ -229,7 +248,8 @@ export class Application {
         customer: req.body.customer,
         status: req.body.status,
 
-        item_id:lastItem[0].item_id+1
+        item_id:lastItem[0].item_id+1,
+        creator:creator
       })
 
       car.save(function(err){
@@ -323,11 +343,15 @@ export class Application {
   }
 
 
-
+  public addCarToUser(req,res) {
+    res.send({})
+  }
 
 
     private createApi(){
   
+        this.data.app.get('/api/v1/setCarToUser', (req:express.Request ,res:express.Response,next:Function)=> this.addCarToUser(req,res));
+
 
         this.data.app.get('/api/v1/users', (req:express.Request ,res:express.Response,next:Function)=> this.getAllUsers(res));
         this.data.app.post('/api/v1/user',(req:express.Request ,res:express.Response,next:Function)=> this.createUser(req,res))
@@ -365,6 +389,7 @@ export class Application {
                 _id: user._id,
                 login: user.login,
                 name: user.name,
+                role:user.role,
                 lastName:user.lastName,
                 allAuto:user.allAuto,
                 inWorkAuto:user.inWorkAuto,

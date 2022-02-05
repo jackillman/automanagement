@@ -6,10 +6,12 @@
     margin-bottom: 40px;
     ul {
         display: flex;
-        width: 800px;
+        width: auto;
         justify-content: space-between;
         list-style: none;
+        padding: 0;
         li {
+            margin-right: 30px;
             a {
                 text-decoration: none;
                 font-size: 20px;

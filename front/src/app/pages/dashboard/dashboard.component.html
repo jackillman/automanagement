@@ -6,17 +6,17 @@
         <ul>
             <li>
               
-                <a [routerLink]="['automobiles']">automobiles</a>
+                <a [routerLink]="['automobiles']">Авто</a>
             </li>
             <!-- <li>
             
                 <a [routerLink]="['finances']">finances</a>
             </li> -->
-            <li>
+            <!-- <li>
                 <a [routerLink]="['calculators']">калькуляторы</a>
                
-            </li>
-            <li *ngIf="SS.currentUser.isCreator">
+            </li> -->
+            <li *ngIf="SS.currentUser.role==='admin' || SS.currentUser.role==='superadmin'">
                 <a [routerLink]="['users']">Клиенты</a>
               
             </li>

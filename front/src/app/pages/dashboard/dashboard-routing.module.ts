@@ -9,16 +9,16 @@ const routes: Routes = [
         path: '',
         component: DashboardComponent,
         children: [
-            {
-                path: 'calculators',
-                canActivate: [],
-                data: { page: `calculators` },
-                loadChildren: () =>
-                    import('../calculators/calculators.module').then(
-                        (m) => m.CalculatorsModule
-                    ),
+            // {
+            //     path: 'calculators',
+            //     canActivate: [],
+            //     data: { page: `calculators` },
+            //     loadChildren: () =>
+            //         import('../calculators/calculators.module').then(
+            //             (m) => m.CalculatorsModule
+            //         ),
                
-            },
+            // },
             {
                 path: 'automobiles',
                 canActivate: [],
