@@ -22,15 +22,15 @@ const routes: Routes = [
             {
                 path: 'automobiles',
                 canActivate: [],
-                data: { page: `users` },
+                data: { page: `cars` },
                 loadChildren: () => import('../automobiles/automobiles.module').then((m) => m.AutomobilesModule),
             },
 
             {
-                path: 'client-base',
+                path: 'users',
                 canActivate: [CreatorGuard],
-                data: { page: `client-base` },
-                loadChildren: () => import('../client-base/client.base.module').then((m) => m.ClientBaseModule),
+                data: { page: `users` },
+                loadChildren: () => import('../users/users.module').then((m) => m.UsersModule),
             },
             
             // {
@@ -113,7 +113,7 @@ const routes: Routes = [
             //             (m) => m.MainModulesFeatureModule
             //         ),
             // },
-            { path: '**', redirectTo: '/dashboard' },
+            { path: '**', redirectTo: '/dashboard/automobiles' },
         ],
     },
 ];

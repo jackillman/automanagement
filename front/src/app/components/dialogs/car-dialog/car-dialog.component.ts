@@ -1,4 +1,4 @@
-import { ChangeDetectionStrategy, Component, Inject, OnInit, ViewEncapsulation } from '@angular/core';
+import { ChangeDetectionStrategy, ChangeDetectorRef, Component, Inject, OnInit, ViewEncapsulation } from '@angular/core';
 import { FormControl, FormGroup } from '@angular/forms';
 import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
 import { of } from 'rxjs';
@@ -20,11 +20,12 @@ export class CarDialogComponent implements OnInit {
   constructor( public dialogRef: MatDialogRef<CarDialogComponent>,
               @Inject(MAT_DIALOG_DATA) public data: any,
               public SS:StateService,
-              public getService:GetService) { }
+              public getService:GetService,
+              public cdr:ChangeDetectorRef) { }
    
     public carData!:FormGroup;
     public ngOnInit(): void {
-      console.log(`this.data`,this.data)
+    //  console.log(`this.data`,this.data)
 
       if(this.data.mode==='edit') {
 
@@ -70,19 +71,19 @@ export class CarDialogComponent implements OnInit {
 
     if(this.data.mode==='edit') {
       const item = {...this.carData.value,item_id:this.data.item_id}
-      console.log(item)
+    
       const request$ = this.getService.editItem(`car`,item).pipe(
-        tap(data => console.log(data) ),
+      //  tap(data => console.log(data) ),
         switchMap( (data:any ) => {
             if(data) {
-              console.log(data)
+             
               this.SS.isCarsLoaded = false
                return this.getService.getItem('cars').pipe(
                   tap( (res:any) => {
     
-                    this.SS.carsList = [...res.data];
+                    this.SS.carsList = this.SS.setCarList(res.data);
                     this.SS.isCarsLoaded = true
-                    console.log(res)
+                 //   console.log(res)
                   }),
                     
                   )
@@ -96,8 +97,9 @@ export class CarDialogComponent implements OnInit {
       )
       .subscribe(
         (res:any)=>{
-          console.log(res)
-          request$.unsubscribe()
+          this.dialogRef.close();
+          request$.unsubscribe();
+          this.cdr.detectChanges()
         }
       )
     }
@@ -105,17 +107,17 @@ export class CarDialogComponent implements OnInit {
       console.log('this.data',this.data)
       const item = {...this.carData.value}
       const request$ = this.getService.createItem(`car`,item).pipe(
-        tap(data => console.log(data) ),
+      //  tap(data => console.log(data) ),
         switchMap( (data:any ) => {
             if(data) {
-              console.log(data)
+            //  console.log(data)
               this.SS.isCarsLoaded = false
                return this.getService.getItem('cars').pipe(
                   tap( (res:any) => {
     
-                    this.SS.carsList = [...res.data];
+                    this.SS.carsList = this.SS.setCarList(res.data);
                     this.SS.isCarsLoaded = true
-                    console.log(res)
+                 //   console.log(res)
                   }),
                     
                   )
@@ -129,32 +131,32 @@ export class CarDialogComponent implements OnInit {
       )
       .subscribe(
         (res:any)=>{
-          console.log(res)
-           this.dialogRef.close();
-          request$.unsubscribe()
+          this.dialogRef.close();
+          request$.unsubscribe();
+          this.cdr.detectChanges()
         }
       )
     }
 
   }
-  public saveCreate() {
-    const item = {...this.carData.value}
-    console.log(`item`,item)
-  }
+  // public saveCreate() {
+  //   const item = {...this.carData.value}
+  //   console.log(`item`,item)
+  // }
   public removeCar(data:any) {
     console.log('remove')
     const request$ = this.getService.removeItem(`car`,data.item_id).pipe(
       tap(data => console.log(data) ),
       switchMap( (data:any ) => {
           if(data) {
-            console.log(data)
+         //   console.log(data)
             this.SS.isCarsLoaded = false
              return this.getService.getItem('cars').pipe(
                 tap( (res:any) => {
-  
-                  this.SS.carsList = [...res.data];
+
+                  this.SS.carsList = this.SS.setCarList(res.data);
                   this.SS.isCarsLoaded = true
-                  console.log(res)
+              //    console.log(res)
                 }),
                   
                 )
@@ -169,8 +171,9 @@ export class CarDialogComponent implements OnInit {
     
     .subscribe(
       (res:any)=>{
-        console.log(res)
         this.dialogRef.close();
+        request$.unsubscribe();
+        this.cdr.detectChanges()
       }
     )
   }

@@ -1,0 +1,46 @@
+.users {
+    display: flex;
+    justify-content: center;
+    .container {
+        flex-direction: column;
+    }
+    .additionals {
+        margin-bottom: 20px;
+        .create {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            cursor: pointer;
+            padding: 8px;
+            p {
+               
+                line-height: 1;
+                margin: 0 10px 0 0;
+            }
+            img {
+                width: 18px;
+            }
+        }
+    }
+
+    table {
+        width: 100%;
+        td.mat-column-photo {
+            img {
+                width:100px
+            }
+        }
+        td.mat-column-delete {
+            img {
+                width:20px;
+                cursor: pointer;
+            }
+        }
+        td.mat-column-edit {
+            img {
+                width:20px;
+                cursor: pointer;
+            }
+        }
+    }
+}

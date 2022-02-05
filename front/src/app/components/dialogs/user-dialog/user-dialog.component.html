@@ -1,0 +1,93 @@
+
+<!-- {{data | json}} -->
+<div class="dialog-wrapper">
+  <ng-container *ngIf="data.mode === 'delete'">
+      <h3> Вы уверены что хотите удалить user? </h3>  
+      <p *ngIf="!!data.login">login: {{data.login}}</p> 
+  
+
+      <div class="delete-btns-block">
+      
+          <button mat-raised-button color="primary" (click)="removeUser(data)" >Да</button>
+          <button mat-raised-button color="warning" (click)="onNoClick()" >Нет</button>
+        </div>
+  
+  </ng-container>
+  <ng-container *ngIf="data.mode !== 'delete'">
+  
+      <form class="auth-form" [formGroup]="userData" (ngSubmit)="submitForm()">
+          <img src="/assets/images/" alt="">
+          <mat-form-field  appearance="fill">
+            <mat-label>login</mat-label>
+            <input type="text" matInput formControlName="login"
+                   placeholder="login">
+      
+          </mat-form-field>
+      
+          <mat-form-field  appearance="fill">
+              <mat-label>name</mat-label>
+              <input type="text" matInput formControlName="name"
+                     placeholder="name">
+      
+          </mat-form-field>
+      
+          <mat-form-field  appearance="fill">
+              <mat-label>lastName</mat-label>
+              <input type="text" matInput formControlName="lastName"
+                     placeholder="lastName">
+      
+          </mat-form-field>
+      
+          <mat-form-field  appearance="fill">
+              <mat-label>email</mat-label>
+              <input type="text" matInput formControlName="email"
+                     placeholder="email">
+      
+          </mat-form-field>
+      
+          <mat-form-field  appearance="fill">
+              <mat-label>isCreator</mat-label>
+              <input type="text" matInput formControlName="isCreator"
+                     placeholder="isCreator">
+      
+          </mat-form-field>
+      
+          <mat-form-field  appearance="fill">
+              <mat-label>carList</mat-label>
+              <input type="text" matInput formControlName="carList"
+                     placeholder="carList">
+      
+          </mat-form-field>
+      
+          <mat-form-field  appearance="fill">
+              <mat-label>role</mat-label>
+              <input type="text" matInput formControlName="role"
+                     placeholder="role">
+      
+          </mat-form-field>
+      
+          <mat-form-field  appearance="fill">
+              <mat-label>allAuto</mat-label>
+              <input type="text" matInput formControlName="allAuto"
+                     placeholder="allAuto">
+      
+          </mat-form-field>
+      
+
+      
+          <mat-form-field  appearance="fill">
+              <mat-label>inWorkAuto</mat-label>
+              <input type="text" matInput formControlName="inWorkAuto"
+                     placeholder="inWorkAuto">
+      
+          </mat-form-field>
+            <div class="example-button-row">
+      
+              <button mat-raised-button color="primary" >Сохранить</button>
+           
+            </div>
+        </form>
+  </ng-container>
+  
+</div>
+

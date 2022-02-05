@@ -28,8 +28,12 @@ export class GetService {
                 .pipe(
                     //tap((res) => { console.log(`${itemName} I: `, res); }),
                     tap((res: I) => {
-
-                        return <I> res;
+                        if(res) {
+                            return <I> res;
+                        } else {
+                            return null
+                        }
+                        
                     }),
                     // tap((res: I) => this.transferState.set(ITEM_KEY, res)),
                     catchError((error: HttpErrorResponse|HttpResponse<any>) => <never> this.HES.handleError(error))

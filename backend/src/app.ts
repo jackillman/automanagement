@@ -100,9 +100,9 @@ export class Application {
   public getAllCars(res:express.Response) {
 
     const Cars = this.data.mongoose.model("Cars", this.carScheme);
-    console.log(`Cars`,Cars)
+   // console.log(`Cars`,Cars)
       Cars.find({}, function(err, cars){
-        console.log(`cars=`,cars)
+       // console.log(`cars=`,cars)
         if(err) return console.log(err);
         res.send({status: 1,data:cars})
     });
@@ -178,8 +178,8 @@ export class Application {
 
   public deleteUser(req,res) {
     const Users = this.data.mongoose.model("Users", this.userScheme);
-    const item_id = +req.body.item_id;
-   
+    // const item_id = +req.body.item_id;
+    const item_id = +req.params.item_id;
     Users.findOneAndDelete({item_id:item_id}, function(err, user){
         
         if(err) return console.log(err);
@@ -199,7 +199,7 @@ export class Application {
 
 
   public async createCar(req,res) {
-    console.log(`req.body`,req.body)
+  //  console.log(`req.body`,req.body)
     if(!req.body) return res.sendStatus(400);
       
       const Cars = this.data.mongoose.model("Cars", this.carScheme);
@@ -246,7 +246,7 @@ export class Application {
 
 
   public async editCar(req,res) {
-    console.log(`req.body`,req.body)
+   // console.log(`req.body`,req.body)
     if(!req.body) return res.sendStatus(400);
 
       const Cars = this.data.mongoose.model("Cars", this.carScheme);
@@ -331,7 +331,7 @@ export class Application {
 
         this.data.app.get('/api/v1/users', (req:express.Request ,res:express.Response,next:Function)=> this.getAllUsers(res));
         this.data.app.post('/api/v1/user',(req:express.Request ,res:express.Response,next:Function)=> this.createUser(req,res))
-        this.data.app.delete('/api/v1/user',(req:express.Request ,res:express.Response,next:Function)=> this.deleteUser(req,res))
+        this.data.app.delete('/api/v1/user/:item_id',jwt({ secret:this.tokenKey,algorithms: ['HS256'] }),(req:express.Request ,res:express.Response,next:Function)=> this.deleteUser(req,res))
         this.data.app.put('/api/v1/user',(req:express.Request ,res:express.Response,next:Function)=> this.editUser(req,res))
        
         this.data.app.get('/api/v1/cars', jwt({ secret:this.tokenKey,algorithms: ['HS256'] }),  (req:express.Request ,res:express.Response,next:Function)=> this.getAllCars(res));
@@ -344,35 +344,33 @@ export class Application {
 
 
         this.data.app.post('/api/v1/auth/', async (req, res) => {
-          const users = await this.getUsers()
-          console.log(`users`,users)
-          console.log(`req.body`,req.body)
-          for (let user of users) {
+          const Users = this.data.mongoose.model("Users", this.userScheme);
+          const userList = await Users.find({}, function(err, users){
+              if(err) return console.log(err);
+              return users
+          });
+        //  console.log(`userList`,userList)
+        //   // const users = await this.getUsers()
+        //   // console.log(`users`,users)
+        //   // console.log(`req.body`,req.body)
+          for (let user of userList) {
             if (
               req.body.login === user.login &&
               req.body.password === user.password
             ) {
-              // let head = Buffer.from(
-              //   JSON.stringify({ alg: 'HS256', typ: 'jwt',  expiresIn: '15m' })
-              // ).toString('base64')
-              // let body = Buffer.from(JSON.stringify(user)).toString(
-              //   'base64'
-              // )
-              // let signature = crypto
-              //   .createHmac('SHA256', this.tokenKey)
-              //   .update(`${head}.${body}`)
-              //   .digest('base64')
-              //   console.log(`signature`,signature)
-                const token = jsonwebtoken.sign(user, this.tokenKey);
+    
+                const token = jsonwebtoken.sign(user.toJSON(), this.tokenKey);
                 console.log(`token`,token)
               return res.status(200).json({
-                id: user.id,
+                _id: user._id,
                 login: user.login,
                 name: user.name,
                 lastName:user.lastName,
                 allAuto:user.allAuto,
                 inWorkAuto:user.inWorkAuto,
                 isCreator:user.isCreator,
+                item_id:user.item_id,
+                carList:user.carList,
                 token
               //  token: `${head}.${body}.${signature}`,
               })

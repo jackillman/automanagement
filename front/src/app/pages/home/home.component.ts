@@ -32,10 +32,10 @@ export class HomeComponent implements OnInit {
               }
 
   ngOnInit(): void {
-    if(localStorage.getItem('token') ) {
-      this.SS.isAuth = true
-      this.router.navigate(['/dashboard/automobiles'])
-    }
+    // if(localStorage.getItem('token') ) {
+    //   this.SS.isAuth = true
+    //   this.router.navigate(['/dashboard/users'])
+    // }
   }
   openCalculatorDialog() {
     const dialogRef = this.dialog.open(CalculatorComponent, {
