@@ -5,7 +5,7 @@ import {FormsModule,ReactiveFormsModule} from '@angular/forms';
 import { MatButtonModule } from '@angular/material/button';
 import { MatInputModule } from '@angular/material/input';
 import { UserDialogComponent } from './user-dialog.component';
-
+import {MatRadioModule} from '@angular/material/radio';
 
 @NgModule({
   imports: [
@@ -13,7 +13,8 @@ import { UserDialogComponent } from './user-dialog.component';
       ReactiveFormsModule,
       MatInputModule,
       MatButtonModule,
-      FormsModule
+      FormsModule,
+      MatRadioModule
   ],
   declarations: [
 

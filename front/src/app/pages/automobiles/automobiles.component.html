@@ -2,7 +2,7 @@
 
 
     <div class="container">
-      <div class="additionals">
+      <div class="additionals" *ngIf="SS.currentUser?.role==='superadmin' || SS.currentUser?.role==='admin'">
         <button  mat-raised-button color="primary" (click)="openDialog('create')" class="create">
          <p> Создать авто </p>
 
@@ -74,26 +74,27 @@
             </ng-container>
 
 
-
-
-            <ng-container matColumnDef="edit">
+    
+              <ng-container matColumnDef="edit">
+                <th mat-header-cell *matHeaderCellDef>  </th>
+                <td mat-cell *matCellDef="let element"> 
+                    <img class="icon" src="/assets/images/icons/edit.png" alt="plus" (click)="openDialog('edit',element)">
+                </td>
+            </ng-container>
+            <ng-container matColumnDef="connect">
               <th mat-header-cell *matHeaderCellDef>  </th>
               <td mat-cell *matCellDef="let element"> 
-                  <img class="icon" src="/assets/images/icons/edit.png" alt="plus" (click)="openDialog('edit',element)">
+                  <img class="icon" src="/assets/images/icons/connection.png" alt="plus" (click)="openDialog('connect',element)">
               </td>
           </ng-container>
-          <ng-container matColumnDef="connect">
-            <th mat-header-cell *matHeaderCellDef>  </th>
-            <td mat-cell *matCellDef="let element"> 
-                <img class="icon" src="/assets/images/icons/connection.png" alt="plus" (click)="openDialog('connect',element)">
-            </td>
-        </ng-container>
-        <ng-container matColumnDef="delete">
-          <th mat-header-cell *matHeaderCellDef>  </th>
-          <td mat-cell *matCellDef="let element"> 
-              <img class="icon" src="/assets/images/icons/delete.png" alt="delete" (click)="openDialog('delete',element)">
-          </td>
-      </ng-container>
+            <ng-container matColumnDef="delete">
+              <th mat-header-cell *matHeaderCellDef>  </th>
+              <td mat-cell *matCellDef="let element"> 
+                  <img class="icon" src="/assets/images/icons/delete.png" alt="delete" (click)="openDialog('delete',element)">
+              </td>
+          </ng-container>
+      
+
             <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
             <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
           </table>

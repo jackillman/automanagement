@@ -62,7 +62,8 @@ export class UserDialogComponent implements OnInit {
 
  
     }
-
+    checkedRole: string ='';
+    roles: string[] = ['client', 'admin'];
 
   public onNoClick(): void {
     this.dialogRef.close();

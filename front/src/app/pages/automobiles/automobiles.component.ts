@@ -13,8 +13,12 @@ import { StateService } from '../../services/state.service';
   encapsulation: ViewEncapsulation.None
 })
 export class AutomobilesComponent implements OnInit {
-
-  constructor(private getService: GetService,public SS:StateService,public dialog:MatDialog,public cdr:ChangeDetectorRef) { }
+  public additionalColumns = ['edit','connect','delete']
+  public displayedColumns: string[] = ['position','photo','purchaseDate', 'auction', 'model', 'vin','price','port','title','container','customer','status'];
+  constructor(private getService: GetService,
+    public SS:StateService,
+    public dialog:MatDialog,
+    public cdr:ChangeDetectorRef) { }
 
   ngOnInit(): void {
   //  console.log(JSON.stringify(this.dataSource))
@@ -27,7 +31,8 @@ export class AutomobilesComponent implements OnInit {
   //     console.log(res)
   //   })
   // }
-  if(this.SS.currentUser.role==='superadmin') {
+  if(this.SS.currentUser.role==='superadmin' || this.SS.currentUser.role==='admin') {
+    this.displayedColumns = this.displayedColumns.concat(this.additionalColumns)
     if(!this.SS.isCarsLoaded) {
       this.getService.getItem('cars').pipe(
    
@@ -60,7 +65,7 @@ export class AutomobilesComponent implements OnInit {
 
     this.cdr.detectChanges()
   }
-  displayedColumns: string[] = ['position','photo','purchaseDate', 'auction', 'model', 'vin','price','port','title','container','customer','status','edit','connect','delete'];
+ 
  // dataSource = ELEMENT_DATA;
   
  

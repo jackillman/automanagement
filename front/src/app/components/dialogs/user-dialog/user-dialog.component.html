@@ -45,12 +45,12 @@
       
           </mat-form-field>
       
-          <mat-form-field  appearance="fill">
+          <!-- <mat-form-field  appearance="fill">
               <mat-label>isCreator</mat-label>
               <input type="text" matInput formControlName="isCreator"
                      placeholder="isCreator">
       
-          </mat-form-field>
+          </mat-form-field> -->
       
           <mat-form-field  appearance="fill">
               <mat-label>carList</mat-label>
@@ -59,12 +59,13 @@
       
           </mat-form-field>
       
-          <mat-form-field  appearance="fill">
-              <mat-label>role</mat-label>
+        
+              <!-- <mat-label>role</mat-label>
               <input type="text" matInput formControlName="role"
-                     placeholder="role">
-      
-          </mat-form-field>
+                     placeholder="role"> -->
+
+
+         
       
           <mat-form-field  appearance="fill">
               <mat-label>allAuto</mat-label>
@@ -89,7 +90,19 @@
       
           </mat-form-field>
           </ng-container>
-          
+       
+          <div class="role-radio" *ngIf="userData.get('role')?.value !=='superadmin'">
+            <label id="example-radio-group-label">Роль</label>
+            <mat-radio-group 
+              aria-labelledby="example-radio-group-label"
+              class="example-radio-group" formControlName="role">
+              <mat-radio-button class="example-radio-button" *ngFor="let roleItem of roles" [value]="roleItem">
+                {{roleItem}}
+              </mat-radio-button>
+            </mat-radio-group>
+
+         
+          </div>
 
             <div class="button-row">
       

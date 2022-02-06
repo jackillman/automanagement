@@ -36,5 +36,16 @@
             width: 100%;
         }
     }
-    
+    .role-radio {
+        margin-bottom: 20px;
+        mat-radio-group {
+            display: flex;
+            flex-direction: column;
+            mat-radio-button {
+                height: 30px;
+                display: flex;
+                align-items: center;
+            }
+        }
+    }
 }

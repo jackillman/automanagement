@@ -129,7 +129,8 @@ export class Application {
      
 
       const user = new Users({
-        isCreator:req.body.isCreator,
+        // isCreator:req.body.isCreator,
+        isCreator:false,
         login:req.body.login,
         lastName: req.body.lastName,
         password: req.body.password,
@@ -137,7 +138,7 @@ export class Application {
         allAuto:+req.body.allAuto,
         inWorkAuto: +req.body.inWorkAuto,
         name:req.body.name,
-        role:req.body.role,
+        role:this.checkRole(req.body.role),
         carList:req.body.carList,
         item_id:lastItem[0].item_id+1
       })
@@ -160,7 +161,7 @@ export class Application {
       const Users = this.data.mongoose.model("Users", this.userScheme);
       // const item_id = +req.body.item_id;
       const filter = {item_id:+req.body.item_id}
-      const obj = {...req.body}
+      const obj = {...req.body,role:this.checkRole(req.body.role)}
 
       Users.findOneAndUpdate(
         filter,              // критерий выборки
@@ -173,14 +174,15 @@ export class Application {
         function(err, result){
             // const {password,...item} = result     
             const item = {
-              isCreator:result.isCreator,
+              // isCreator:result.isCreator,
+              isCreator:false,
               login:result.login,
               lastName: result.lastName,
               email: result.email,
               allAuto:result.allAuto,
               inWorkAuto: result.inWorkAuto,
               name:result.name,
-              role:result.role,
+              role: result.role,
               carList:result.carList,
               item_id:result.item_id
             }
@@ -342,7 +344,10 @@ export class Application {
 
   }
 
-
+  public checkRole(role:string):string {
+    const roles =['superadmin','admin','client'];
+    return !!roles.find(roleItem=>roleItem===role) ? role : 'client'
+  }
   public async addCarToUser(req,res) {
     console.log(`req`,req.body)
    // const Cars = this.data.mongoose.model("Cars", this.carScheme);
@@ -436,7 +441,7 @@ export class Application {
                 _id: user._id,
                 login: user.login,
                 name: user.name,
-                role:user.role,
+                role: this.checkRole(user.role),
                 lastName:user.lastName,
                 allAuto:user.allAuto,
                 inWorkAuto:user.inWorkAuto,

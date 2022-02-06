@@ -1,8 +1,7 @@
-import { ChangeDetectorRef, Component, OnInit } from '@angular/core';
-import { map, take, tap } from 'rxjs';
-import { IResponse } from 'src/app/interfaces/iresponse.interface';
+import { ChangeDetectorRef, Component, OnDestroy, OnInit } from '@angular/core';
 
-import { GetService } from 'src/app/services/get.service';
+import { User } from 'src/app/models/user.model';
+
 import { StateService } from 'src/app/services/state.service';
 
 @Component({
@@ -10,7 +9,7 @@ import { StateService } from 'src/app/services/state.service';
   templateUrl: './dashboard.component.html',
   styleUrls: ['./dashboard.component.scss']
 })
-export class DashboardComponent implements OnInit {
+export class DashboardComponent implements OnInit,OnDestroy {
 
   constructor(
               public SS:StateService,
@@ -21,5 +20,11 @@ export class DashboardComponent implements OnInit {
 
 
   }
+  ngOnDestroy(){
+    this.SS.carsList = [];
+    this.SS.currentUser = new User();
+    this.SS.isAuth = false;
+    localStorage.clear()
 
+  }
 }
