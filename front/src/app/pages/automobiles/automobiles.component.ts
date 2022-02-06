@@ -23,10 +23,10 @@ export class AutomobilesComponent implements OnInit {
  
 
       ).subscribe( (res:IResponse|any)=>{
-        console.log(`res`,res)
+      
         if(res.status===1) {
           this.SS.carsList = this.SS.setCarList(res.data);
-         console.log(`this.SS.carsList`,this.SS.carsList)
+         
          this.cdr.detectChanges()
         }
      
@@ -43,7 +43,7 @@ export class AutomobilesComponent implements OnInit {
     console.log(item)
   }
   public openDialog(mode:string,data?:any) {
-    console.log(`mode`,mode)
+    
     const dialogRef = this.dialog.open(CarDialogComponent, {
       height: mode === 'delete' ? '260px' : '600px' ,
       width: mode === 'delete' ? '300px' : '800px'  ,

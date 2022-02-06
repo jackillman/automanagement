@@ -8,6 +8,7 @@ import path from 'path';
 const crypto = require('crypto')
 const jwt = require('express-jwt');
 import { Schema } from 'mongoose';
+import { send } from 'process';
 const jsonwebtoken = require('jsonwebtoken');
 // import { User } from './models/user';
 
@@ -212,8 +213,7 @@ export class Application {
 
 
   public async createCar(req,res) {
-    console.log(`req.body`,req)
-    console.log(`req.user`,req.user)
+  
     if(!req.body) return res.sendStatus(400);
       
       const Cars = this.data.mongoose.model("Cars", this.carScheme);
@@ -343,14 +343,87 @@ export class Application {
   }
 
 
-  public addCarToUser(req,res) {
-    res.send({})
+  public async addCarToUser(req,res) {
+    console.log(`req`,req.body)
+   // const Cars = this.data.mongoose.model("Cars", this.carScheme);
+ 
+    if(!req.body) return res.sendStatus(400);
+ 
+      const Users = this.data.mongoose.model("Users", this.userScheme);
+      // const item_id = +req.body.item_id;
+      const filter = {item_id:+req.body.user_id}
+      const obj = {carList:req.body.car_id}
+      // { $push: { friends: objFriends  } },
+      const user = await Users.findOne(filter, function(err, user){
+        if(err) return console.log(err);
+        return user
+        // res.send({status:0,data:null})
+      });
+     
+      if(user) {
+        if(req.body.action) {
+         
+          const exist = user.carList.find(car_id=>car_id===req.body.car_id);
+         
+          if(!!exist) return res.send({status:1,data:null,message:`car exists in user`});
+          user.carList.push(req.body.car_id);
+          
+        } else {
+        
+          const exist = user.carList.find(car_id=>car_id===req.body.car_id);
+          if(!exist) return res.send({status:1,data:null,message:`car not remove in user`});;
+          const index = user.carList.indexOf(req.body.car_id);
+          if (index > -1) {
+            user.carList.splice(index, 1); 
+          }
+         
+        }
+       
+          
+          user.carList.sort( (a:number,b:number)=>a-b)
+          user.save().then((result) => {
+            return res.send({status:1,data:result}) 
+          }).catch((err) => {
+            return res.send({status:0,data:null}) 
+          });
+
+      }
+    //   Users.findOneAndUpdate(
+    //     filter,              // критерий выборки
+    //     { $push:  {
+    //       carList:req.body.car_id
+    //     }
+          
+    //     },     // параметр обновления
+    //     {
+    //       new: true,
+    //       upsert: true,
+    //     },
+    //     function(err, result){
+    //         // const {password,...item} = result    
+    //         console.log(`result`,result) 
+    //         // const item = {
+    //         //   isCreator:result.isCreator,
+    //         //   login:result.login,
+    //         //   lastName: result.lastName,
+    //         //   email: result.email,
+    //         //   allAuto:result.allAuto,
+    //         //   inWorkAuto: result.inWorkAuto,
+    //         //   name:result.name,
+    //         //   role:result.role,
+    //         //   carList:result.carList.push(req.body.car_id),
+    //         //   item_id:result.item_id
+    //         // }
+    //         // console.log(result,`item`)
+    //         res.send({status:1,data:result}) 
+    //     }
+    // );
   }
 
 
     private createApi(){
   
-        this.data.app.get('/api/v1/setCarToUser', (req:express.Request ,res:express.Response,next:Function)=> this.addCarToUser(req,res));
+        this.data.app.put('/api/v1/user/set_car', (req:express.Request ,res:express.Response,next:Function)=> this.addCarToUser(req,res));
 
 
         this.data.app.get('/api/v1/users', (req:express.Request ,res:express.Response,next:Function)=> this.getAllUsers(res));

@@ -20,8 +20,9 @@ export class GlobalService {
         cars:                   `${this.API}/api/v1/cars/`,
         users:             `${this.API}/api/v1/users/`,
         auth:             `${this.API}/api/v1/auth/`,
-        car:          `${this.API}/api/v1/car`, 
-        user:          `${this.API}/api/v1/user`, 
+        car:              `${this.API}/api/v1/car`, 
+        user:             `${this.API}/api/v1/user`, 
+        user_set_car:     `${this.API}/api/v1/user/set_car`
     };
 
     get API(): string {

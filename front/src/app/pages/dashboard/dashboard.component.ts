@@ -17,7 +17,7 @@ export class DashboardComponent implements OnInit {
               public cdr:ChangeDetectorRef) { }
 
   ngOnInit(): void {
-    console.log('users')
+
 
 
   }

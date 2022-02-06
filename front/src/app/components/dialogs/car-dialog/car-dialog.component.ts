@@ -71,6 +71,7 @@ export class CarDialogComponent implements OnInit {
         });
       } else if(this.data.mode==='connect'){
         if(!this.SS.isUsersLoaded && this.SS.currentUser.role ==='admin' || this.SS.currentUser.role ==='superadmin') {
+          
           this.getService.getItem('users').pipe(
        
       
@@ -79,7 +80,15 @@ export class CarDialogComponent implements OnInit {
               if(res.status===1) {
                 this.SS.userList = this.SS.setUserList(res.data);
                 this.usersSelectList = this.SS.userList.filter(el=>el.role!=='superadmin')
-               console.log(`this.SS.carsList`,this.SS.userList)
+         
+                this.usersSelectList.forEach(user=>{
+                  const exist = user.carList.find( (item_id:number)=>item_id===this.data.item_id)
+            
+                  if(!!exist) {
+                    this.selectedViewers.push(user.item_id)
+                  }
+                })
+
                this.cdr.detectChanges()
               }
            
@@ -94,20 +103,18 @@ export class CarDialogComponent implements OnInit {
      
     }
 
-    public selectItem(ev:any,id:number){
-      console.log(ev,id)
-      console.log(ev.source.selected)
-      console.log(`this.data`,this.data)
-      if(ev.source.selected) {
+    // public setVal(user:User) {
+    //   const num = user.carList.find( (el:number)=>el===this.data.item_id)
+    //   if(!!num) {
+    //     this.selectedViewers.push(user.item_id)
+    //   }
 
-      }
- 
-    }
+    // }
+
   public onNoClick(): void {
     this.dialogRef.close();
   }
   public submitForm() {
-    console.log(`carData`,this.carData.value);
 
     if(this.data.mode==='edit') {
       const item = {...this.carData.value,item_id:this.data.item_id}
@@ -144,7 +151,7 @@ export class CarDialogComponent implements OnInit {
       )
     }
     if(this.data.mode==='create') {
-      console.log('this.data',this.data)
+    
       const item = {...this.carData.value}
       const request$ = this.getService.createItem(`car`,item).pipe(
       //  tap(data => console.log(data) ),
@@ -217,4 +224,113 @@ export class CarDialogComponent implements OnInit {
       }
     )
   }
+  public checkCar(list:number[]) {
+    const exist = list.find(item=>item===this.data.item_id)
+    return !!exist
+  }
+  public onCheckboxTap(ev:any,item_id:number){
+    const data = {
+      user_id: item_id,
+      car_id: this.data.item_id,
+      action: ev.checked
+    }
+    // if(ev.source.selected) {
+      this.getService.setItem('user_set_car',data).pipe(
+     //   tap(data => console.log(data) ),
+        switchMap( (data:any ) => {
+            if(data) {
+             console.log(data)
+              this.SS.isUsersLoaded = false
+               return this.getService.getItem('users').pipe(
+                  tap( (res:any) => {
+  
+                    this.SS.userList = this.SS.setUserList(res.data);
+                    this.usersSelectList = this.SS.userList.filter(el=>el.role!=='superadmin')
+         
+                    // this.usersSelectList.forEach(user=>{
+                    //   const exist = user.carList.find( (item_id:number)=>item_id===this.data.item_id)
+                
+                    //   if(!!exist) {
+                    //     this.selectedViewers.push(user.item_id)
+                    //   }
+                    // })
+                    this.SS.isUsersLoaded = true
+                //    console.log(res)
+                  }),
+                    
+                  )
+            } else {
+              return of(false)
+            }
+  
+                
+  
+        })
+      )
+      
+      
+      
+      .subscribe(res=>{
+        console.log(`setItem`,res)
+      })
+  }
+  public selectItem(ev:any,user:User){
+    console.log(ev,ev.isUserInput)
+    console.log(ev.source.selected)
+    console.log(`this.data`,this.data)
+    if (ev.isUserInput) {    // ignore on deselection of the previous option
+      console.log('Meta Signal Changed to ' + user + ev.isUserInput);
+
+      // const exist = user.carList.find(car_id=>car_id===this.data.item_id);
+      // console.log(`exist`,exist)
+      // if(!!exist) return 
+      const data = {
+        user_id: user.item_id,
+        car_id: this.data.item_id,
+        action: ev.source.selected
+      }
+      // if(ev.source.selected) {
+        this.getService.setItem('user_set_car',data).pipe(
+       //   tap(data => console.log(data) ),
+          switchMap( (data:any ) => {
+              if(data) {
+               console.log(data)
+                this.SS.isUsersLoaded = false
+                 return this.getService.getItem('users').pipe(
+                    tap( (res:any) => {
+    
+                      this.SS.userList = this.SS.setUserList(res.data);
+                      this.usersSelectList = this.SS.userList.filter(el=>el.role!=='superadmin')
+           
+                      this.usersSelectList.forEach(user=>{
+                        const exist = user.carList.find( (item_id:number)=>item_id===this.data.item_id)
+                  
+                        if(!!exist) {
+                          this.selectedViewers.push(user.item_id)
+                        }
+                      })
+                      this.SS.isUsersLoaded = true
+                  //    console.log(res)
+                    }),
+                      
+                    )
+              } else {
+                return of(false)
+              }
+    
+                  
+    
+          })
+        )
+        
+        
+        
+        .subscribe(res=>{
+          console.log(`setItem`,res)
+        })
+    }
+
+ }
+
+  // }
 }

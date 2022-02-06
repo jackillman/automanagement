@@ -58,10 +58,10 @@ export class HomeComponent implements OnInit {
     });
   }
   public onSubmit(){
-    console.warn(this.profileForm.value);
+    // console.warn(this.profileForm.value);
     this.getService.tryAuth(this.profileForm.value).subscribe(
       (res:any)=>{
-        console.log(res)
+      
         if(res){
           if (res['token']) {
             localStorage.setItem('token', res['token']); //token here is stored in a local storage
