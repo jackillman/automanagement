@@ -2,7 +2,7 @@
 
 
     <div class="container">
-      <div class="additionals" *ngIf="SS.currentUser?.role==='superadmin' || SS.currentUser?.role==='admin'">
+      <div class="additionals" *ngIf="SS.currentUser.role==='superadmin' || SS.currentUser.role==='admin'">
         <button  mat-raised-button color="primary" (click)="openDialog('create')" class="create">
          <p> Создать авто </p>
 
