@@ -13,7 +13,8 @@
                 <p>Всего авто {{SS.currentUser.allAuto}}</p>
                 <p>В работе {{SS.currentUser.inWorkAuto}}</p>
             </div>
-            <a [routerLink]="['']">Вернуться</a>
+            <button (click)="editHimself()">редактировать</button>
+            <!-- <a [routerLink]="['']">Вернуться</a> -->
         </div>
     </div>
 </div>

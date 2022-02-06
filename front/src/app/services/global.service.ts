@@ -22,7 +22,10 @@ export class GlobalService {
         auth:             `${this.API}/api/v1/auth/`,
         car:              `${this.API}/api/v1/car`, 
         user:             `${this.API}/api/v1/user`, 
-        user_set_car:     `${this.API}/api/v1/user/set_car`
+        user_set_car:     `${this.API}/api/v1/user/set_car`,
+        needed_cars:     `${this.API}/api/v1/needed_cars`,
+
+        
     };
 
     get API(): string {

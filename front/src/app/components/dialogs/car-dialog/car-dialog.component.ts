@@ -224,16 +224,23 @@ export class CarDialogComponent implements OnInit {
       }
     )
   }
-  public checkCar(list:number[]) {
-    const exist = list.find(item=>item===this.data.item_id)
+  public checkCar(list:any[]) {
+    console.log(`list`,list)
+
+    const exist = list.find(el=>el.item_id===this.data.item_id)
     return !!exist
+ 
+   
   }
   public onCheckboxTap(ev:any,item_id:number){
+    console.log(`ev`,ev)
+    console.log(`item_id`,item_id)
     const data = {
       user_id: item_id,
       car_id: this.data.item_id,
       action: ev.checked
     }
+    console.log(`data`,data)
     // if(ev.source.selected) {
       this.getService.setItem('user_set_car',data).pipe(
      //   tap(data => console.log(data) ),

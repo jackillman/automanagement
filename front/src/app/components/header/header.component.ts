@@ -1,6 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { StateService } from 'src/app/services/state.service';
 
+
 @Component({
   selector: 'app-header',
   templateUrl: './header.component.html',
@@ -12,5 +13,7 @@ export class HeaderComponent implements OnInit {
 
   ngOnInit(): void {
   }
+  editHimself(){
 
+  }
 }

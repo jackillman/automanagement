@@ -317,9 +317,9 @@ export class Application {
   
     const Cars = this.data.mongoose.model("Cars", this.carScheme);
     const carList = req.body.carList;
-  
+    console.log(`carList`,carList)
     const ids = carList.map(el=>el.item_id)
-   
+ 
     Cars.find(  {item_id: {
       $in: ids
     }
@@ -352,30 +352,31 @@ export class Application {
       const Users = this.data.mongoose.model("Users", this.userScheme);
       // const item_id = +req.body.item_id;
       const filter = {item_id:+req.body.user_id}
-      const obj = {carList:req.body.car_id}
+      // const obj = {carList:req.body.car_id}
       // { $push: { friends: objFriends  } },
       const user = await Users.findOne(filter, function(err, user){
         if(err) return console.log(err);
         return user
-        // res.send({status:0,data:null})
+       
       });
      
       if(user) {
         if(req.body.action) {
-         
-          const exist = user.carList.find(car_id=>car_id===req.body.car_id);
+
+          const exist = user.carList.find(el=>el.item_id===req.body.car_id);
          
           if(!!exist) return res.send({status:1,data:null,message:`car exists in user`});
-          user.carList.push(req.body.car_id);
+          user.carList.push({item_id:req.body.car_id});
           
         } else {
         
-          const exist = user.carList.find(car_id=>car_id===req.body.car_id);
-          if(!exist) return res.send({status:1,data:null,message:`car not remove in user`});;
-          const index = user.carList.indexOf(req.body.car_id);
-          if (index > -1) {
-            user.carList.splice(index, 1); 
-          }
+          const exist = user.carList.find(el=>el.item_id===req.body.car_id);
+          if(!exist) return res.send({status:1,data:null,message:`car not remove in user`});
+          user.carList = user.carList.filter( el => el.item_id !== req.body.car_id );
+          // const index = user.carList.indexOf(req.body.car_id);
+          // if (index > -1) {
+          //   user.carList.splice(index, 1); 
+          // }
          
         }
        
@@ -387,37 +388,10 @@ export class Application {
             return res.send({status:0,data:null}) 
           });
 
+      } else {
+        res.send({status:0,data:null,message:`user does not exists`});
       }
-    //   Users.findOneAndUpdate(
-    //     filter,              // критерий выборки
-    //     { $push:  {
-    //       carList:req.body.car_id
-    //     }
-          
-    //     },     // параметр обновления
-    //     {
-    //       new: true,
-    //       upsert: true,
-    //     },
-    //     function(err, result){
-    //         // const {password,...item} = result    
-    //         console.log(`result`,result) 
-    //         // const item = {
-    //         //   isCreator:result.isCreator,
-    //         //   login:result.login,
-    //         //   lastName: result.lastName,
-    //         //   email: result.email,
-    //         //   allAuto:result.allAuto,
-    //         //   inWorkAuto: result.inWorkAuto,
-    //         //   name:result.name,
-    //         //   role:result.role,
-    //         //   carList:result.carList.push(req.body.car_id),
-    //         //   item_id:result.item_id
-    //         // }
-    //         // console.log(result,`item`)
-    //         res.send({status:1,data:result}) 
-    //     }
-    // );
+
   }
 
 
@@ -437,7 +411,7 @@ export class Application {
         this.data.app.put('/api/v1/car',(req:express.Request ,res:express.Response,next:Function)=> this.editCar(req,res))
 
 
-        this.data.app.post('/api/v1/carsearch',(req:express.Request ,res:express.Response,next:Function)=> this.searchCarsByIds(req,res))
+        this.data.app.post('/api/v1/needed_cars',(req:express.Request ,res:express.Response,next:Function)=> this.searchCarsByIds(req,res))
 
 
         this.data.app.post('/api/v1/auth/', async (req, res) => {

@@ -18,21 +18,46 @@ export class AutomobilesComponent implements OnInit {
 
   ngOnInit(): void {
   //  console.log(JSON.stringify(this.dataSource))
-  if(!this.SS.isCarsLoaded) {
-    this.getService.getItem('cars').pipe(
- 
+  // if(!this.SS.isCarsLoaded) {
+    
+  //   const obj = {carList:this.SS.currentUser.carList}
+  //   this.getService.getNeededCars('needed_cars',obj).pipe(
 
-      ).subscribe( (res:IResponse|any)=>{
-      
+  //   ).subscribe(res=>{
+  //     console.log(res)
+  //   })
+  // }
+  if(this.SS.currentUser.role==='superadmin') {
+    if(!this.SS.isCarsLoaded) {
+      this.getService.getItem('cars').pipe(
+   
+  
+        ).subscribe( (res:IResponse|any)=>{
+        
+          if(res.status===1) {
+            this.SS.carsList = this.SS.setCarList(res.data);
+           
+           this.cdr.detectChanges()
+          }
+       
+        this.SS.isCarsLoaded = false
+      })
+    }
+  } else {
+    if(!this.SS.isCarsLoaded) {
+      const obj = {carList:this.SS.currentUser.carList}
+      this.getService.getNeededCars('needed_cars',obj).pipe(
+
+        ).subscribe( (res:IResponse|any)=>{
         if(res.status===1) {
           this.SS.carsList = this.SS.setCarList(res.data);
          
          this.cdr.detectChanges()
         }
-     
-      this.SS.isCarsLoaded = false
-    })
+      })
+    }
   }
+
     this.cdr.detectChanges()
   }
   displayedColumns: string[] = ['position','photo','purchaseDate', 'auction', 'model', 'vin','price','port','title','container','customer','status','edit','connect','delete'];

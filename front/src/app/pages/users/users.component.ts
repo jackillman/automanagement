@@ -40,7 +40,7 @@ export class UsersComponent implements OnInit {
   public isHimself(item_id:number):boolean {
     return this.SS.currentUser.item_id!==item_id
   } 
-  displayedColumns: string[] = ['login','name','lastName','email','isCreator', 'carList','role', 'allAuto', 'inWorkAuto','edit','delete'];
+  displayedColumns: string[] = ['login','name','lastName','email','isCreator','role','cars', 'allAuto', 'inWorkAuto','edit','delete'];
 
   public openDialog(mode:string,data?:any) {
     console.log(`mode`,mode)
@@ -55,5 +55,8 @@ export class UsersComponent implements OnInit {
       console.log(`Dialog result: ${result}`);
       this.cdr.detectChanges()
     });
+  }
+  public getCarIds(list:any[]){
+    return list.map(el=>el.item_id)
   }
 }

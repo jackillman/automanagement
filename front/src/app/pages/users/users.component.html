@@ -47,11 +47,6 @@
           </ng-container>
         
           <!-- Symbol Column -->
-          <ng-container matColumnDef="carList">
-            <th mat-header-cell *matHeaderCellDef> carList </th>
-            <td mat-cell *matCellDef="let element"> {{element.carList}} </td>
-          </ng-container>
-
 
 
           <!-- Weight Column -->
@@ -59,7 +54,11 @@
             <th mat-header-cell *matHeaderCellDef> role </th>
             <td mat-cell *matCellDef="let element"> {{element.role}} </td>
           </ng-container>
-        
+
+          <ng-container matColumnDef="cars">
+            <th mat-header-cell *matHeaderCellDef> cars </th>
+            <td mat-cell *matCellDef="let element"> {{getCarIds(element.carList)}} </td>
+          </ng-container>
           <!-- Symbol Column -->
           <ng-container matColumnDef="allAuto">
             <th mat-header-cell *matHeaderCellDef> allAuto </th>

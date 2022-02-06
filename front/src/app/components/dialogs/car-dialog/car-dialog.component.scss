@@ -2,6 +2,11 @@
     height: 100%;
     display: flex;
     flex-direction: column;
+    mat-list {
+        mar-list-item {
+            border-bottom: 1px solid #575757;
+        }
+    }
     .delete-btns-block {
         margin-top: auto;
         display: flex;
@@ -35,11 +40,4 @@
     
     }
     
-}
-.mat-select-panel-wrap {
-    mat-option {
-        .mat-opt-value {
-            margin: 0;
-        }
-    }
 }
