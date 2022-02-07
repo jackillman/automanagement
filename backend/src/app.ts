@@ -74,21 +74,21 @@ export class Application {
 
    }
 
-    public  getCars() {
-      const filePath:string = path.join(__dirname, './DATA/API/cars.json')
-      return this.fsHandlerApp(filePath);
+  //   public  getCars() {
+  //     const filePath:string = path.join(__dirname, './DATA/API/cars.json')
+  //     return this.fsHandlerApp(filePath);
    
-  }
-    public  getUsers() {
-      const filePath:string = path.join(__dirname, './DATA/API/users.json')
-      return this.fsHandlerApp(filePath);
-    //   const Users = this.data.mongoose.model("Users", this.userScheme);
-    //   Users.find({}, function(err, users){
+  // }
+  //   public  getUsers() {
+  //     const filePath:string = path.join(__dirname, './DATA/API/users.json')
+  //     return this.fsHandlerApp(filePath);
+  //   //   const Users = this.data.mongoose.model("Users", this.userScheme);
+  //   //   Users.find({}, function(err, users){
 
-    //     if(err) return console.log(err);
-    //     return users
-    // });
-  }
+  //   //     if(err) return console.log(err);
+  //   //     return users
+  //   // });
+  // }
   public getAllUsers(res) {
 
       const Users = this.data.mongoose.model("Users", this.userScheme);
@@ -130,6 +130,7 @@ export class Application {
 
       const user = new Users({
         // isCreator:req.body.isCreator,
+      
         isCreator:false,
         login:req.body.login,
         lastName: req.body.lastName,
@@ -174,6 +175,7 @@ export class Application {
         function(err, result){
             // const {password,...item} = result     
             const item = {
+              id_:result._id,
               // isCreator:result.isCreator,
               isCreator:false,
               login:result.login,
@@ -258,6 +260,25 @@ export class Application {
           if(err) {
             return console.log(err);
           }
+        
+          const dirPath = path.join(__dirname, './DATA/upload/');
+          const pathFull = path.join(dirPath, car.vin)
+          fs.mkdir(pathFull,{recursive: true}, (err) => {
+            if (err) {
+                return console.error(err);
+            }
+            const p1 = path.join(pathFull, `auction`)
+            fs.mkdirSync(p1, { recursive: true });
+            const p2 = path.join(pathFull, `warehouse`)
+            fs.mkdirSync(p2, { recursive: true });
+            const p3 = path.join(pathFull, `port`)
+            fs.mkdirSync(p3, { recursive: true });
+            const p4 = path.join(pathFull, `docs`)
+            fs.mkdirSync(p4, { recursive: true });
+            const p5 = path.join(pathFull, `invoices`)
+            fs.mkdirSync(p5, { recursive: true });
+            console.log('Directory created successfully!');
+        });
           res.send({
             status: 1,
             data: car,
@@ -289,18 +310,35 @@ export class Application {
         }
     );
   }
-  
+  public deleteFolderRecursive (directoryPath) {
+    if (fs.existsSync(directoryPath)) {
+        fs.readdirSync(directoryPath).forEach((file, index) => {
+          const curPath = path.join(directoryPath, file);
+          if (fs.lstatSync(curPath).isDirectory()) {
+           // recurse
+            this.deleteFolderRecursive(curPath);
+          } else {
+            // delete file
+            fs.unlinkSync(curPath);
+          }
+        });
+        fs.rmdirSync(directoryPath);
+      }
+    };
 
   public deleteCar(req,res) {
     const Cars = this.data.mongoose.model("Cars", this.carScheme);
     // const item_id = +req.body.item_id;
     const item_id = +req.params.item_id;
-    
-   
+    const self = this
+    const dirPath = path.join(__dirname, './DATA/upload/');
     Cars.findOneAndDelete({item_id:item_id}, function(err, car){
         
         if(err) return console.log(err);
         if(car) {
+     
+          self.deleteFolderRecursive(path.join(dirPath, car.vin))
+        //  fs.rmSync(path.join(dirPath, car.vin), { recursive: true, force: true });
           res.send({status:1,data:car,message:'Car was deleted'});
         } else {
           res.send({

@@ -13,7 +13,7 @@ import { StateService } from '../../services/state.service';
   encapsulation: ViewEncapsulation.None
 })
 export class AutomobilesComponent implements OnInit {
-  public additionalColumns = ['edit','connect','delete']
+  public additionalColumns = ['edit','connect','delete','photos']
   public displayedColumns: string[] = ['position','photo','purchaseDate', 'auction', 'model', 'vin','price','port','title','container','customer','status'];
   constructor(private getService: GetService,
     public SS:StateService,
@@ -86,4 +86,5 @@ export class AutomobilesComponent implements OnInit {
       this.cdr.detectChanges()
     });
   }
+
 }
