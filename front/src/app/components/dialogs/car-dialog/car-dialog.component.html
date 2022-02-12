@@ -118,8 +118,62 @@
     </ng-container>
 
     <ng-container *ngIf="data.mode==='photos'">
-      photos
+      <!-- <input type="file" class="file-input"
+      (change)="onFileSelected($event)" #fileUpload>
 
+      <div class="file-upload">
+
+        {{fileName || "No file uploaded yet."}}
+
+        <button mat-mini-fab color="primary" class="upload-btn"
+          (click)="fileUpload.click()">
+            <mat-icon>attach_file</mat-icon>
+        </button>
+      </div> -->
+      <!-- <div class="form-group">
+        <label for="file">Choose File</label>
+        <input type="file"
+               id="file"
+               name="uploadFile"
+
+               (change)="handleFileInput($event)">
+               <button (click)="uploadFileToActivity()">uploadFileToActivity()</button>
+    </div> enctype="multipart/form-data"-->
+    <!-- <form action="/upload" method="post" enctype="multipart/form-data">
+      <input type="file" name="photo" />
+    </form> -->
+    <form [formGroup]="myForm" (ngSubmit)="submitFileForm()" >
+  
+
+        
+      <div class="form-group">
+          <label for="file">File</label>
+          <input 
+              formControlName="photo"
+              id="file" 
+              type="file" 
+              class="form-control"
+              (change)="onFileChange($event)">
+
+      </div>
+            
+      <button class="btn btn-primary" type="submit">Submit</button>
+  </form> 
+    <!-- <input type="file" id="input" #inputFile multiple>
+    <button (click)="sendFile(inputFile)">send</button> -->
+      <!-- <form  [formGroup]="uploadForm" (ngSubmit)="onSubmit()" >      
+        <div>
+          <input type="file" formControlName="fileItem" (change)="onFileSelect($event)" />
+        </div>
+        <div>
+          <button>Upload</button>
+        </div>
+      </form> -->
+ 
+    <!-- <form action="/api/v1/upload" method="POST" enctype="multipart/form-data">
+      <input type="file" name="file" id="">
+      <button>upload </button>
+  </form> -->
     </ng-container>
 
 </div>

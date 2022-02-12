@@ -1,5 +1,5 @@
 import { isPlatformBrowser } from "@angular/common";
-import { HttpClient, HttpErrorResponse, HttpResponse } from "@angular/common/http";
+import { HttpClient, HttpErrorResponse, HttpHeaders, HttpParams, HttpResponse } from "@angular/common/http";
 import { Inject, Injectable, PLATFORM_ID } from "@angular/core";
 import { Observable } from "rxjs/internal/Observable";
 import { tap, map, catchError } from 'rxjs/operators';
@@ -133,5 +133,41 @@ export class GetService {
                     catchError((error: HttpErrorResponse|HttpResponse<any>) => <never> this.HES.handleError(error))
                 );
 
+    }
+
+    public upload(dir:string,data:any): Observable<any|never> {
+     //   console.log(`dir:string,formData:a`,dir,file)
+        console.log(`data`,data)
+        const options = {
+            headers: new HttpHeaders().append('Content-Type', 'file;multipart/form-data; charset=utf-8')
+          
+         
+          }
+       
+     //   const formData = new FormData();
+      //  formData.append("thumbnail", file);
+        const url = `${this.GS.SOURCE[`upload`]}/${dir}`
+        console.log(url,`url`)
+        return this.http.post<any>(url,data,{
+            headers: {
+                'enctype': 'multipart/form-data; boundary=request-boundary',
+                'Accept': 'application/json',
+                'typeFolder':'auction'
+              }
+        })
+        .pipe(
+            tap((res) => { console.log( res); }),
+            // tap((res: any) => {
+            //     console.log(res)
+            //     if(res) {
+            //         return <any> res;
+            //     } else {
+            //         return null
+            //     }
+                
+            // }),
+            // tap((res: I) => this.transferState.set(ITEM_KEY, res)),
+             catchError((error: HttpErrorResponse|HttpResponse<any>) => <never> this.HES.handleError(error))
+        );
     }
 }

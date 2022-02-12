@@ -24,7 +24,7 @@ export class GlobalService {
         user:             `${this.API}/api/v1/user`, 
         user_set_car:     `${this.API}/api/v1/user/set_car`,
         needed_cars:     `${this.API}/api/v1/needed_cars`,
-
+        upload:            `${this.API}/api/v1/upload`,
         
     };
 

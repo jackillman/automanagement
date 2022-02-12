@@ -8,9 +8,22 @@ import path from 'path';
 const crypto = require('crypto')
 const jwt = require('express-jwt');
 import { Schema } from 'mongoose';
-import { send } from 'process';
+
 const jsonwebtoken = require('jsonwebtoken');
 // import { User } from './models/user';
+ const multer  = require('multer')
+// const storage = multer.diskStorage({
+//   destination: function (req, file, cb) {
+//     cb(null, 'uploads/')
+//   },
+//   filename: function (req, file, cb) {
+//     console.log(`file`,file)
+//     cb(null, Date.now() + path.extname(file.originalname)) //Appending extension
+//   }
+// })
+// // const upload = multer({ storage: storage });
+// const upload = multer({ dest: 'uploads/' })
+
 
 
 export class Application {
@@ -436,10 +449,34 @@ export class Application {
       }
 
   }
+  // uploadFile(req,res) {
+  //  console.log(`req,res`,req)
+  //  console.log(`req.files`,req.files)
 
+  //   if (req.files) {
+  //     const file = req.files.file;
+  //     console.log(`file`,file)
+  //     const fileName = file.name
+  //     file.mv(`${__dirname}/store/${fileName}`, err => {
+  //         if (err) {
+  //             console.log(err)
+  //             res.send('There is error')
+  //         } else {
+  //             res.send('uploaded successfully')
+  //         }
+  //     })
+  //   } else {
+  //       res.send('There are no files')
+  //   }
+   
+  // }
 
     private createApi(){
-  
+
+      // const type = upload.single('photo');
+    //  const upload = this.data.multer({ storage: storage });
+      // const type = multer({ storage: storage }).single('photo')
+    //  console.log(type)
         this.data.app.put('/api/v1/user/set_car', (req:express.Request ,res:express.Response,next:Function)=> this.addCarToUser(req,res));
 
 
@@ -456,6 +493,32 @@ export class Application {
 
         this.data.app.post('/api/v1/needed_cars',(req:express.Request ,res:express.Response,next:Function)=> this.searchCarsByIds(req,res))
 
+        let storage = multer.diskStorage({
+          destination: './uploads' ,
+         filename: function ( req:any, file:any, cb:any ) {
+          // //   //file.originalname
+          // //     cb( null, new Date().getTime()+".png");
+          cb(null, new Date().getTime()+'_'+ file.originalname+".png");
+         }
+        });
+        let upload = multer( { storage: storage } );
+        const type = upload.single('photo')
+        this.data.app.post('/api/v1/upload/:typeFolder', type,(req:any ,res:express.Response,next:Function)=> {
+           console.log(`req`,req)
+           console.log(`req`,req.filename)
+          if (req.file) { 
+            console.dir(req.file);
+          }
+          console.dir(req.files);
+          console.log(`body`,req.body)
+          console.log(`photo`,req.photo)
+          console.log(`file`,req.file);
+          let typeFolder = req.params.typeFolder;
+          console.log(`typeFolder`,typeFolder)
+          // var tmp_path = req.file.path;
+          // console.log(`tmp_path`,tmp_path)
+          res.send({status:1})
+        })
 
         this.data.app.post('/api/v1/auth/', async (req, res) => {
           const Users = this.data.mongoose.model("Users", this.userScheme);

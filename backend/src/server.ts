@@ -11,27 +11,14 @@ const mongoose = require("mongoose");
 
 import { ENV } from './env/environment';
 import { Application } from './app';
-
+const bodyParser = require('body-parser')
 import { Url } from 'url';
-
+//const fileUpload = require('express-fileupload');
 const URL = require('url');
 
 const fs = require('fs');
-// const rateLimit = require("express-rate-limit");
-// const apiLimiter = rateLimit({
-//   windowMs: 2 * 60 * 1000, // 2 minutes
-//   max: 100
-// });
-// const { MongoClient } = require('mongodb');
-// const url = "mongodb+srv://car-app:car-app@cluster0.w1bms.mongodb.net/myFirstDatabase?retryWrites=true&w=majority";
-// const client = new MongoClient(url, { useNewUrlParser: true, useUnifiedTopology: true });
-// client.connect(err => {
-// 	console.log(err)
-//   const collection = client.db("cars-app").collection("users");
-//   console.log(`collection`,collection)
-//   // perform actions on the collection object
-//  // client.close();
-// });
+
+
 const program = require('commander')
   .option('--local', 'local')
 
@@ -48,12 +35,6 @@ export const MODE_APP:string = localMode() ? 'local' : devMode() ? 'dev' : prodM
 const PORT = ENV.PORT;
 
 
-
-
-
-
-
-
 // const uriLocal = "mongodb://localhost:27017/cars-app" 
 mongoose.connect(uri, { useUnifiedTopology: true, useNewUrlParser: true, useFindAndModify: false ,useCreateIndex: true}, function(err){
     if(err) return console.log(err);
@@ -62,41 +43,23 @@ mongoose.connect(uri, { useUnifiedTopology: true, useNewUrlParser: true, useFind
 	const http = require('http').createServer(app);
   app.use(cors())
   app.disable('x-powered-by');
-  app.use('*',checkQueryParams);
-  function checkQueryParams(req:express.Request ,res:express.Response,next:Function) {
-	  // console.log(`req.query.code`,req.query.code)
-	  const code:string | any = req.query.code;
-	  if(req.originalUrl.startsWith('/?') || code) {
-		  console.log("NEED REDIRECT TO APP.LANET.TV",req.originalUrl)
-		  
-  
-	  next();
-	  } else {
-		  next();
-	  }
-   // https://my.lanet.tv/personal-account?promo=
-  }
-  
-  
-  
-  app.use(express.json());
-  app.use(express.urlencoded({ extended: false }));
-  // console.log(`__dirname + 'public'`,__dirname + '/public')
-  app.use(express.static(__dirname));
-  
 
-  
-  
+  app.use(bodyParser.json());
 
-  
+  app.use(bodyParser.urlencoded({ extended: true }));
+  app.use(express.static(__dirname + '/public'));
+  // app.use(express.static('public'));
+  // app.use(fileUpload({
+  //     useTempFiles : true,
+  //     tempFileDir : '/tmp/'
+  // }));
+  new Application({app:app,mongoose:mongoose});
   http.listen(PORT, function(){
 	  console.log("Сервер ожидает подключения...",PORT);
 
   });
-  
 
 
-	new Application({app:app,mongoose:mongoose});
 });
 
 

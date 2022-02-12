@@ -8,6 +8,7 @@ import { MatSelectModule } from '@angular/material/select';
 import { CarDialogComponent } from './car-dialog.component';
 import {MatCheckboxModule} from '@angular/material/checkbox';
 import {MatListModule} from '@angular/material/list';
+import {MatIconModule} from '@angular/material/icon';
 @NgModule({
   imports: [
       CommonModule,
@@ -17,7 +18,8 @@ import {MatListModule} from '@angular/material/list';
       MatSelectModule,
       FormsModule,
       MatCheckboxModule,
-      MatListModule
+      MatListModule,
+      MatIconModule
   ],
   declarations: [
 
