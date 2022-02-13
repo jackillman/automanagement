@@ -118,47 +118,66 @@
     </ng-container>
 
     <ng-container *ngIf="data.mode==='photos'">
-      <!-- <input type="file" class="file-input"
-      (change)="onFileSelected($event)" #fileUpload>
-
-      <div class="file-upload">
-
-        {{fileName || "No file uploaded yet."}}
-
-        <button mat-mini-fab color="primary" class="upload-btn"
-          (click)="fileUpload.click()">
-            <mat-icon>attach_file</mat-icon>
-        </button>
-      </div> -->
-      <!-- <div class="form-group">
-        <label for="file">Choose File</label>
-        <input type="file"
-               id="file"
-               name="uploadFile"
-
-               (change)="handleFileInput($event)">
-               <button (click)="uploadFileToActivity()">uploadFileToActivity()</button>
-    </div> enctype="multipart/form-data"-->
-    <!-- <form action="/upload" method="post" enctype="multipart/form-data">
-      <input type="file" name="photo" />
-    </form> -->
-    <form [formGroup]="myForm" (ngSubmit)="submitFileForm()" >
+      <div class="photo-wrap">
+        <form [formGroup]="myForm" (ngSubmit)="submitFileForm()" >
   
-
-        
-      <div class="form-group">
-          <label for="file">File</label>
-          <input 
-              formControlName="photo"
-              id="file" 
-              type="file" 
-              class="form-control"
-              (change)="onFileChange($event)">
-
-      </div>
+          <mat-form-field appearance="fill">
+            <mat-label>Выберите раздел</mat-label>
+            <mat-select formControlName="selectedType">
+              <mat-option *ngFor="let type of selectTypes" [value]="type.value">
+                {{type.viewValue}}
+              </mat-option>
+            </mat-select>
+          </mat-form-field>
             
-      <button class="btn btn-primary" type="submit">Submit</button>
-  </form> 
+          <div class="form-group">
+             
+              <input 
+                  formControlName="photo"
+                  id="file" 
+                  type="file" 
+                  class="form-control"
+                  (change)="onFileChange($event)">
+  
+          </div>
+                
+          <button class="btn btn-primary"  mat-raised-button type="submit" *ngIf="isShowButton">Загрузить фото</button>
+      </form> 
+      {{data | json}}
+      <div class="photos-list">
+        <div class="imgs auction" *ngIf="data.photoList.auction.length">
+          <ng-container *ngFor="let img of data.photoList.auction">
+            <img src="{{environmentApi+'/uploads/'+data.vin+'/auction/'+img}}" alt="">
+          </ng-container>
+        </div>
+
+        <div class="imgs docs" *ngIf="data.photoList.docs.length">
+          <ng-container *ngFor="let img of data.photoList.docs">
+            <img src="{{environmentApi+'/uploads/'+data.vin+'/docs/'+img}}" alt="">
+          </ng-container>
+        </div>
+
+
+        <div class="imgs docs" *ngIf="data.photoList.invoices.length">
+          <ng-container *ngFor="let img of data.photoList.invoices">
+            <img src="{{environmentApi+'/uploads/'+data.vin+'/invoices/'+img}}" alt="">
+          </ng-container>
+        </div>
+
+        <div class="imgs port" *ngIf="data.photoList.port.length">
+          <ng-container *ngFor="let img of data.photoList.port">
+            <img src="{{environmentApi+'/uploads/'+data.vin+'/port/'+img}}" alt="">
+          </ng-container>
+        </div>
+
+        <div class="imgs warehouse" *ngIf="data.photoList.warehouse.length">
+          <ng-container *ngFor="let img of data.photoList.warehouse">
+            <img src="{{environmentApi+'/uploads/'+data.vin+'/warehouse/'+img}}" alt="">
+          </ng-container>
+        </div>
+      </div>
+      </div>
+
     <!-- <input type="file" id="input" #inputFile multiple>
     <button (click)="sendFile(inputFile)">send</button> -->
       <!-- <form  [formGroup]="uploadForm" (ngSubmit)="onSubmit()" >      

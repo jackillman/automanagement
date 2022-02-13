@@ -3,6 +3,7 @@ import { HttpClient, HttpErrorResponse, HttpHeaders, HttpParams, HttpResponse } 
 import { Inject, Injectable, PLATFORM_ID } from "@angular/core";
 import { Observable } from "rxjs/internal/Observable";
 import { tap, map, catchError } from 'rxjs/operators';
+import { Car } from "../models/car.model";
 import { GlobalService } from "./global.service";
 
 import { HandleErrorService } from "./handleError.service";
@@ -135,20 +136,22 @@ export class GetService {
 
     }
 
-    public upload(dir:string,data:any): Observable<any|never> {
+    public upload(dir:string,formData:any,car:Car): Observable<any|never> {
      //   console.log(`dir:string,formData:a`,dir,file)
-        console.log(`data`,data)
-        const options = {
-            headers: new HttpHeaders().append('Content-Type', 'file;multipart/form-data; charset=utf-8')
+        console.log(`data`,formData)
+        console.log('car',car)
+        // const options = {
+        //     headers: new HttpHeaders().append('Content-Type', 'file;multipart/form-data; charset=utf-8')
           
          
-          }
+        //   }
        
      //   const formData = new FormData();
       //  formData.append("thumbnail", file);
-        const url = `${this.GS.SOURCE[`upload`]}/${dir}`
+        const timeStamp = new Date().getTime()
+        const url = `${this.GS.SOURCE[`upload`]}/?type=${dir}&vin=${car.vin}&_id=${car._id}&timestamp=${timeStamp}`
         console.log(url,`url`)
-        return this.http.post<any>(url,data,{
+        return this.http.post<any>(url,formData,{
             headers: {
                 'enctype': 'multipart/form-data; boundary=request-boundary',
                 'Accept': 'application/json',

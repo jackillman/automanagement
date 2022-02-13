@@ -42,7 +42,9 @@ export class Application {
       customer: String,
       status: String,
       item_id:{ type : Number , unique : true, required : true },
-      creator: {_id: String, login: String, item_id: Number, time_create: Number}
+      creator: {_id: String, login: String, item_id: Number, time_create: Number},
+      photoList:{auction: Array, docs: Array, invoices: Array, port: Array,warehouse:Array},
+      mainPhoto: {typeFolder: String, id_photo: String }
     }, {versionKey: false})
     private userScheme = new Schema({
       id_:String,
@@ -87,21 +89,7 @@ export class Application {
 
    }
 
-  //   public  getCars() {
-  //     const filePath:string = path.join(__dirname, './DATA/API/cars.json')
-  //     return this.fsHandlerApp(filePath);
-   
-  // }
-  //   public  getUsers() {
-  //     const filePath:string = path.join(__dirname, './DATA/API/users.json')
-  //     return this.fsHandlerApp(filePath);
-  //   //   const Users = this.data.mongoose.model("Users", this.userScheme);
-  //   //   Users.find({}, function(err, users){
 
-  //   //     if(err) return console.log(err);
-  //   //     return users
-  //   // });
-  // }
   public getAllUsers(res) {
 
       const Users = this.data.mongoose.model("Users", this.userScheme);
@@ -250,8 +238,17 @@ export class Application {
         item_id:req.user.item_id,
         time_create:Date.now()
       }
-     
-
+      const photoList = {
+          auction:[],
+          docs:[],
+          invoices:[],
+          port:[],
+          warehouse:[]
+      }
+      const  mainPhoto = {
+        typeFolder:'auction',
+        id_photo:''
+      }
       const car = new Cars({
         photo:req.body.photo,
         purchaseDate: req.body.purchaseDate,
@@ -266,15 +263,17 @@ export class Application {
         status: req.body.status,
 
         item_id:lastItem[0].item_id+1,
-        creator:creator
+        creator:creator,
+        photoList:photoList,
+        mainPhoto:mainPhoto
       })
-
+      console.log(`car`,car)
       car.save(function(err){
           if(err) {
             return console.log(err);
           }
         
-          const dirPath = path.join(__dirname, './DATA/upload/');
+          const dirPath = path.join(__dirname, './public/uploads/');
           const pathFull = path.join(dirPath, car.vin)
           fs.mkdir(pathFull,{recursive: true}, (err) => {
             if (err) {
@@ -344,7 +343,7 @@ export class Application {
     // const item_id = +req.body.item_id;
     const item_id = +req.params.item_id;
     const self = this
-    const dirPath = path.join(__dirname, './DATA/upload/');
+    const dirPath = path.join(__dirname, './public/uploads/');
     Cars.findOneAndDelete({item_id:item_id}, function(err, car){
         
         if(err) return console.log(err);
@@ -449,28 +448,8 @@ export class Application {
       }
 
   }
-  // uploadFile(req,res) {
-  //  console.log(`req,res`,req)
-  //  console.log(`req.files`,req.files)
 
-  //   if (req.files) {
-  //     const file = req.files.file;
-  //     console.log(`file`,file)
-  //     const fileName = file.name
-  //     file.mv(`${__dirname}/store/${fileName}`, err => {
-  //         if (err) {
-  //             console.log(err)
-  //             res.send('There is error')
-  //         } else {
-  //             res.send('uploaded successfully')
-  //         }
-  //     })
-  //   } else {
-  //       res.send('There are no files')
-  //   }
    
-  // }
-
     private createApi(){
 
       // const type = upload.single('photo');
@@ -494,30 +473,132 @@ export class Application {
         this.data.app.post('/api/v1/needed_cars',(req:express.Request ,res:express.Response,next:Function)=> this.searchCarsByIds(req,res))
 
         let storage = multer.diskStorage({
-          destination: './uploads' ,
+        // destination: './uploads' ,
+          destination: (req,file,cb)=>{
+  
+            const vin = req.query.vin;
+            const type = req.query.type;
+         
+            const dirPath = path.join(__dirname, './public/uploads/');
+            const pathFull = path.join(dirPath, vin,type)
+            console.log(`pathFull`,pathFull)
+    
+            fs.stat(pathFull,(error, stats)=>{
+              console.log(`stats`,stats)
+              if(!stats) {
+                return fs.mkdir(pathFull,error=>cb(error,pathFull))
+              } else {
+                return cb(null,pathFull)
+              }
+              
+            })
+          } ,
          filename: function ( req:any, file:any, cb:any ) {
           // //   //file.originalname
+          console.log('file',file)
           // //     cb( null, new Date().getTime()+".png");
-          cb(null, new Date().getTime()+'_'+ file.originalname+".png");
+        //  const timeStamp = new Date().getTime();
+          const timeStamp = req.query.timestamp;
+          console.log(timeStamp)
+      //    const Cars = this.data.mongoose.model("Cars", this.carScheme);
+          // const item_id = +req.body.item_id;
+      
+          const vin = req.query.vin;
+          const type = req.query.type;
+ 
+
+
+
+          let extensionFile = 'png'; 
+          if(file.mimetype.includes('image/')) {
+            extensionFile  =file.mimetype.split('image/')[1] ? file.mimetype.split('image/')[1] : `png`;
+            console.log(`extensionFile`,extensionFile)
+            cb(null, timeStamp + '__' + file.originalname + "." + extensionFile);
+          } else {
+            extensionFile  = file.mimetype.split('application/')[1];
+            cb(null, timeStamp + '__' + `doc` + "." + extensionFile);
+          }
+        
+          
+         
          }
         });
         let upload = multer( { storage: storage } );
         const type = upload.single('photo')
-        this.data.app.post('/api/v1/upload/:typeFolder', type,(req:any ,res:express.Response,next:Function)=> {
-           console.log(`req`,req)
-           console.log(`req`,req.filename)
+        this.data.app.post('/api/v1/upload', type,async (req:any ,res:express.Response,next:Function)=> {
+          //  console.log(`req`,req)
+          let typeFolder = req.query.type;
+          const timeStamp = req.query.timestamp;
+          console.log(`  this.timeStamp`,timeStamp)
+           const query = req.query.vin;
+           console.log(`query`,query)
+           console.log(`req`,req.file.filename)
           if (req.file) { 
+          
+            const _id = req.query._id;
+            const Cars = this.data.mongoose.model("Cars", this.carScheme);
+            const filter = {_id:_id}
+            const car = await Cars.findOne(filter, function(err, car){
+              if(err) return console.log(err);
+              return car
+             
+            });
+            if(car) {
+              console.log(`typeFolder`,typeFolder)
+              console.log(`car.photoList[typeFolder]`,car.photoList[typeFolder])
+              const filename = req.file.filename
+              car.photoList[typeFolder].push(filename)
+              car.save(function(err){
+                if(err) {
+                  return console.log(err);
+                }
+                res.send({
+                  status: 1,
+                  data: car,
+                  message:'update '+typeFolder
+                });
+            });
+
+            } else {
+              res.send({status:0})
+            }
+          //   console.log(`car`,car)
+          //   console.log(`filter`,filter)
+          //   const photoList = {
+          //     auction:[timeStamp],
+          //     docs:[],
+          //     invoices:[],
+          //     port:[],
+          //     warehouse:[]
+          // }
+          //   Cars.findOneAndUpdate(
+          //     filter,              // критерий выборки
+          //       { $set:  {
+          //         photoList : photoList
+          //       } 
+          //     },     // параметр обновления
+          //     {
+          //       new: true
+          //     },
+          //     function(err, result){
+          //             console.log(result)
+                 
+              
+          //     }
+          // );
             console.dir(req.file);
           }
-          console.dir(req.files);
-          console.log(`body`,req.body)
-          console.log(`photo`,req.photo)
+          // console.dir(req.files);
+          // console.log(`body`,req.body)
+          // console.log(`photo`,req.photo)
           console.log(`file`,req.file);
-          let typeFolder = req.params.typeFolder;
-          console.log(`typeFolder`,typeFolder)
+          // let typeFolder = req.params.typeFolder;
+          // console.log(`typeFolder`,typeFolder)
           // var tmp_path = req.file.path;
           // console.log(`tmp_path`,tmp_path)
-          res.send({status:1})
+  
+
+         
         })
 
         this.data.app.post('/api/v1/auth/', async (req, res) => {
@@ -526,10 +607,7 @@ export class Application {
               if(err) return console.log(err);
               return users
           });
-        //  console.log(`userList`,userList)
-        //   // const users = await this.getUsers()
-        //   // console.log(`users`,users)
-        //   // console.log(`req.body`,req.body)
+
           for (let user of userList) {
             if (
               req.body.login === user.login &&

@@ -9,12 +9,13 @@ import { IResponse } from 'src/app/interfaces/iresponse.interface';
 import { User } from 'src/app/models/user.model';
 import { GetService } from 'src/app/services/get.service';
 import { StateService } from 'src/app/services/state.service';
+import { environment } from 'src/environments/environment';
 
 @Component({
   selector: 'app-car-dialog',
   templateUrl: './car-dialog.component.html',
   styleUrls: ['./car-dialog.component.scss'],
- // changeDetection: ChangeDetectionStrategy.OnPush,
+  changeDetection: ChangeDetectionStrategy.OnPush,
   encapsulation: ViewEncapsulation.None
 
 })
@@ -31,7 +32,15 @@ export class CarDialogComponent implements OnInit {
     public usersSelectList:any[] = [];
     // public usersViewers = new FormControl();
     public selectedViewers: number[] = []
-    public usersViewers = new FormControl([])
+    public usersViewers = new FormControl([]);
+    public environmentApi = environment.api
+    public myForm = new FormGroup({
+      photo: new FormControl('', [Validators.required]),
+      fileSource: new FormControl('', [Validators.required]),
+      selectedType: new FormControl('auction', [Validators.required]),
+    });
+
+
     public ngOnInit(): void {
     //  console.log(`this.data`,this.data)
 
@@ -98,10 +107,8 @@ export class CarDialogComponent implements OnInit {
         //   profile: new FormControl(``),
       
         // });
-        console.log(`this.data.mode`,this.data.mode)
-        this.uploadForm = new FormGroup({
-          fileItem: new FormControl(null),
-        })
+        console.log(`this.data.mode`,this.data)
+
 
         
       }
@@ -348,111 +355,29 @@ export class CarDialogComponent implements OnInit {
 
  }
 
-//  fileName = '';
-//  onFileSelected(event:any) {
-// //  type dirPhoto = 'auction' || 'warehouse' || 'port' || 'docs' || 'invoices'
-//   const file:File = event.target.files[0];
-//   console.log(`file`,file)
-//   if (file) {
-
-//       this.fileName = file.name;
-
-//       const formData = new FormData();
-
-//       formData.append("thumbnail", file);
-//       console.log(`formData`,formData)
-//       const upload$ = this.getService.upload('auction',formData)
-//     //  const upload$ = this.http.post("/api/thumbnail-upload", formData);
-
-//       upload$.subscribe(res=>{
-//         console.log(res)
-//       });
-//   }
-// }
-
-  fileToUpload: File | null = null;
-  handleFileInput(ev: any) {
-    const files = ev.target.files
-    console.log(files)
-    this.fileToUpload = files.item(0);
-    const formData:any = new FormData();
-
-    formData.append("thumbnail", this.fileToUpload);
-    // this.getService.upload('auction',formData).subscribe(
-    //   res=>console.log(res)
-    // )
-  }
-  uploadFileToActivity() {
-    console.log(`uploadFileToActivity`,this.fileToUpload)
-    this.getService.upload('auction',this.fileToUpload).subscribe(
-      res=>console.log(res)
-    )
-  
-  }
-
- uploadForm!: FormGroup | any;
-// onFileSelect(event:any) {
-//   if (event.target.files.length > 0) {
-//     const file = event.target.files[0];
-//     console.log(`file`,file)
-   
-//     // this.uploadForm.get('fileItem').setValue(file);
-//     this.uploadForm.patchValue({
-//       fileItem: file,
-//    })
-  
-//   }
-// }
-//   onSubmit() {
-//     const formData = new FormData();
-//     formData.append('file', this.uploadForm.get('fileItem').value);
-
-//     this.getService.upload('auction', formData).subscribe({
-//       next: (v) => console.log(v),
-//       error: (e) => console.error(e),
-//       complete: () => console.info('complete') 
-
-//     }  )
-//   }
-  // public sendFile(inputFile:any) {
-  //   console.log(inputFile.files)
-  //   const file = inputFile.files[0]
-  //   const form_data:any = new FormData();
-  //   form_data.append('myFile', file);
-  //   form_data.append('lol', 'lol');
-  //   console.log(`fd`,form_data.getAll(`myFile`))
-  //   console.log(`file`,file)
-  //   console.log('boundary:', form_data._boundary);
-  //   for (var key of form_data.entries()) {
-	// 		console.log(key[0] + ', ' + key[1])
-	// 	}
-  //   this.getService.upload('auction', form_data).subscribe({
-  //     next: (v) => console.log(v),
-  //     error: (e) => console.error(e),
-  //     complete: () => console.info('complete') 
-
-  //   }  )
-  //   // const selectedFile = document.getElementById('input').files[0];
-  // }
 
 
-
-  myForm = new FormGroup({
-    photo: new FormControl('', [Validators.required]),
-    fileSource: new FormControl('', [Validators.required])
-  });
-  onFileChange(event:any) {
+selectTypes: any[] = [
+  {value: 'auction', viewValue: 'Аукцион'},
+  {value: 'docs', viewValue: 'Документы'},
+  {value: 'invoices', viewValue: 'Инвойсы'},
+  {value: 'port', viewValue: 'Порт'},
+  {value: 'warehouse', viewValue: 'Склад'},
+];
+public isShowButton = false
+public onFileChange(event:any) {
   
     if (event.target.files.length > 0) {
       const file = event.target.files[0];
       this.myForm.patchValue({
         fileSource: file
       });
+      this.isShowButton = true
     }
   }
 
-  submitFileForm(){
-
+  public submitFileForm(){
+    if(!this.isShowButton) return 
     const formData = new FormData();
     console.log(`this.myForm.get('fileSource')?.value`,this.myForm.get('file')?.value)
     formData.append('photo', this.myForm.get('fileSource')?.value,'photo');
@@ -460,32 +385,40 @@ export class CarDialogComponent implements OnInit {
 
 
     console.log(`formData`,formData)
+    const dir = this.myForm.get('selectedType')?.value
 
+      this.getService.upload(dir, formData,this.data).pipe(
+      tap(data => console.log(data) ),
+      switchMap( (data:any ) => {
+          if(data) {
+         //   console.log(data)
+            this.SS.isCarsLoaded = false
+             return this.getService.getItem('cars').pipe(
+                tap( (res:any) => {
 
-    // formData.append("hello", "world")
-    // formData.append("file", fs.createReadStream(file))
-    // formData.pipe(concat(data => {
-  
-      this.getService.upload('auction', formData).subscribe({
+                  this.SS.carsList = this.SS.setCarList(res.data);
+                  this.SS.isCarsLoaded = true
+              //    console.log(res)
+                }),
+                  
+                )
+          } else {
+            return of(false)
+          }
+
+              
+
+      })
+      ).subscribe({
         next: (v) => console.log(v),
         error: (e) => console.error(e),
-        complete: () => console.info('complete') 
+        complete: () => {
+          console.info('complete');
+        //  this.myForm.reset();
+          this.isShowButton = false
+        }
   
       }  )
-    // }))
-    // const request = new HttpRequest('POST',`/api/v1/upload`,{body:formData},{
-    //   headers: new HttpHeaders().append('Content-Type', 'multipart/form-data'),
-    //   reportProgress: true
-    // })
-    // this.httpClient.request(request).subscribe(res=>{
-    //   console.log(res)
-    // })
-    
-    // this.getService.upload('auction', formData).subscribe({
-    //   next: (v) => console.log(v),
-    //   error: (e) => console.error(e),
-    //   complete: () => console.info('complete') 
 
-    // }  )
   }
 }
