@@ -143,56 +143,79 @@
                 
           <button class="btn btn-primary"  mat-raised-button type="submit" *ngIf="isShowButton">Загрузить фото</button>
       </form> 
-      {{data | json}}
-      <div class="photos-list">
-        <div class="imgs auction" *ngIf="data.photoList.auction.length">
-          <ng-container *ngFor="let img of data.photoList.auction">
-            <img src="{{environmentApi+'/uploads/'+data.vin+'/auction/'+img}}" alt="">
-          </ng-container>
+      <!-- {{data | json}} -->
+        <div class="photos-list">
+          <div class="imgs-block auction" *ngIf="data.photoList.auction.length">
+            <h3>Аукцион</h3>
+            <ng-container *ngFor="let img of data.photoList.auction">
+              <div class="img-wr">
+                <img [src]="setImgSrc('auction',img)" alt="" (click)="showFullSizeImg('auction',img)">
+                <span (click)="removeImg('auction',img)">delete</span>
+              </div>
+            
+            </ng-container>
+          </div>
+
+          <div class="imgs-block docs" *ngIf="data.photoList.docs.length">
+            <h3>Документы</h3>
+            <ng-container *ngFor="let img of data.photoList.docs" >
+              <div class="img-wr" (click)="showFullSizeImg($event,img)">
+          
+                <!-- <img [src]="setImgSrc('docs',img)" alt=""> -->
+          
+
+                <span>delete</span>
+              </div>
+            </ng-container>
+          </div>
+
+
+          <div class="imgs-block invoices" *ngIf="data.photoList.invoices.length">
+            <h3>Инвойсы</h3>
+            <ng-container *ngFor="let img of data.photoList.invoices">
+              <div class="img-wr">
+                <img [src]="setImgSrc('invoices',img)" alt="" (click)="showFullSizeImg('invoices',img)">
+                <span (click)="removeImg('invoices',img)">delete</span>
+              </div>
+            </ng-container>
+          </div>
+
+          <div class="imgs-block port" *ngIf="data.photoList.port.length">
+            <h3>Порт</h3>
+            <ng-container *ngFor="let img of data.photoList.port">
+              <div class="img-wr">
+                <img [src]="setImgSrc('port',img)" alt="" (click)="showFullSizeImg('port',img)">
+                <span (click)="removeImg('port',img)">delete</span>
+              </div>
+            
+            </ng-container>
+          </div>
+
+          <div class="imgs-block warehouse" *ngIf="data.photoList.warehouse.length">
+            <h3>Склад</h3>
+            <ng-container *ngFor="let img of data.photoList.warehouse">
+              <div class="img-wr">
+                <img [src]="setImgSrc('warehouse',img)" alt="" (click)="showFullSizeImg('warehouse',img)">
+                <span (click)="removeImg('warehouse',img)">delete</span>
+              </div>
+            
+            </ng-container>
+          </div>
+        </div>
+        <div class="full-image-container" *ngIf="isShowFullImage">
+          <img src="{{showImageSrc}}" alt="">
+          <div class="layout" (click)="closeShowImage()"></div>
         </div>
 
-        <div class="imgs docs" *ngIf="data.photoList.docs.length">
-          <ng-container *ngFor="let img of data.photoList.docs">
-            <img src="{{environmentApi+'/uploads/'+data.vin+'/docs/'+img}}" alt="">
-          </ng-container>
+        <div class="delete-image-container" *ngIf="isShowDeleteImage">
+        
+          <p>Вы действительно хотите удалить картинку ?</p>
+          <button mat-raised-button color="warn" (click)="confirmRemoveImage()">Да</button>
+          <button mat-raised-button color="primary" (click)="noRemoveImage()">Нет</button>
         </div>
 
-
-        <div class="imgs docs" *ngIf="data.photoList.invoices.length">
-          <ng-container *ngFor="let img of data.photoList.invoices">
-            <img src="{{environmentApi+'/uploads/'+data.vin+'/invoices/'+img}}" alt="">
-          </ng-container>
-        </div>
-
-        <div class="imgs port" *ngIf="data.photoList.port.length">
-          <ng-container *ngFor="let img of data.photoList.port">
-            <img src="{{environmentApi+'/uploads/'+data.vin+'/port/'+img}}" alt="">
-          </ng-container>
-        </div>
-
-        <div class="imgs warehouse" *ngIf="data.photoList.warehouse.length">
-          <ng-container *ngFor="let img of data.photoList.warehouse">
-            <img src="{{environmentApi+'/uploads/'+data.vin+'/warehouse/'+img}}" alt="">
-          </ng-container>
-        </div>
       </div>
-      </div>
 
-    <!-- <input type="file" id="input" #inputFile multiple>
-    <button (click)="sendFile(inputFile)">send</button> -->
-      <!-- <form  [formGroup]="uploadForm" (ngSubmit)="onSubmit()" >      
-        <div>
-          <input type="file" formControlName="fileItem" (change)="onFileSelect($event)" />
-        </div>
-        <div>
-          <button>Upload</button>
-        </div>
-      </form> -->
- 
-    <!-- <form action="/api/v1/upload" method="POST" enctype="multipart/form-data">
-      <input type="file" name="file" id="">
-      <button>upload </button>
-  </form> -->
     </ng-container>
 
 </div>

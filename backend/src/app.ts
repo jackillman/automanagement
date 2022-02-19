@@ -304,6 +304,9 @@ export class Application {
    // console.log(`req.body`,req.body)
     if(!req.body) return res.sendStatus(400);
 
+    const folder = req.query.folder;
+    const image = req.query.image;
+
       const Cars = this.data.mongoose.model("Cars", this.carScheme);
       // const item_id = +req.body.item_id;
       const filter = {item_id:+req.body.item_id}
@@ -316,9 +319,16 @@ export class Application {
           new: true
         },
         function(err, result){
-              
+        
+            if(folder && image) {
+    
+              const dirPath = path.join(__dirname, './public/uploads/');
+              const pathFull = path.join(dirPath, result.vin,folder,image);
            
-            res.send({status:1,data:result }) 
+              fs.unlinkSync(pathFull);
+            }
+           
+            res.send({status:1,data:result,message:folder && image ? 'edit item and remove image':'edit item' }) 
         }
     );
   }
@@ -503,11 +513,8 @@ export class Application {
       //    const Cars = this.data.mongoose.model("Cars", this.carScheme);
           // const item_id = +req.body.item_id;
       
-          const vin = req.query.vin;
-          const type = req.query.type;
- 
-
-
+          // const vin = req.query.vin;
+          // const type = req.query.type;
 
           let extensionFile = 'png'; 
           if(file.mimetype.includes('image/')) {
@@ -562,43 +569,12 @@ export class Application {
             } else {
               res.send({status:0})
             }
-          //   console.log(`car`,car)
-          //   console.log(`filter`,filter)
-          //   const photoList = {
-          //     auction:[timeStamp],
-          //     docs:[],
-          //     invoices:[],
-          //     port:[],
-          //     warehouse:[]
-          // }
-          //   Cars.findOneAndUpdate(
-          //     filter,              // критерий выборки
-          //       { $set:  {
-          //         photoList : photoList
-          //       } 
-          //     },     // параметр обновления
-          //     {
-          //       new: true
-          //     },
-          //     function(err, result){
-          //             console.log(result)
-                 
-              
-          //     }
-          // );
+
             console.dir(req.file);
           }
-          // console.dir(req.files);
-          // console.log(`body`,req.body)
-          // console.log(`photo`,req.photo)
-          console.log(`file`,req.file);
-          // let typeFolder = req.params.typeFolder;
-          // console.log(`typeFolder`,typeFolder)
-          // var tmp_path = req.file.path;
-          // console.log(`tmp_path`,tmp_path)
-  
 
-         
+          console.log(`file`,req.file);
+
         })
 
         this.data.app.post('/api/v1/auth/', async (req, res) => {

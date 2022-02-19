@@ -2,6 +2,7 @@ import { ChangeDetectionStrategy, ChangeDetectorRef, Component, OnInit, ViewEnca
 import { MatDialog } from '@angular/material/dialog';
 import { IResponse } from 'src/app/interfaces/iresponse.interface';
 import { GetService } from 'src/app/services/get.service';
+import { environment } from 'src/environments/environment';
 import { CarDialogComponent } from '../../components/dialogs/car-dialog/car-dialog.component';
 import { StateService } from '../../services/state.service';
 
@@ -15,22 +16,14 @@ import { StateService } from '../../services/state.service';
 export class AutomobilesComponent implements OnInit {
   public additionalColumns = ['edit','connect','delete','photos']
   public displayedColumns: string[] = ['position','photo','purchaseDate', 'auction', 'model', 'vin','price','port','title','container','customer','status'];
+  public environmentApi = environment.api;
   constructor(private getService: GetService,
     public SS:StateService,
     public dialog:MatDialog,
     public cdr:ChangeDetectorRef) { }
 
   ngOnInit(): void {
-  //  console.log(JSON.stringify(this.dataSource))
-  // if(!this.SS.isCarsLoaded) {
-    
-  //   const obj = {carList:this.SS.currentUser.carList}
-  //   this.getService.getNeededCars('needed_cars',obj).pipe(
 
-  //   ).subscribe(res=>{
-  //     console.log(res)
-  //   })
-  // }
   if(this.SS.currentUser.role==='superadmin' || this.SS.currentUser.role==='admin') {
     this.displayedColumns = this.displayedColumns.concat(this.additionalColumns)
     if(!this.SS.isCarsLoaded) {
@@ -69,14 +62,29 @@ export class AutomobilesComponent implements OnInit {
  // dataSource = ELEMENT_DATA;
   
  
-  add(item:any) {
-    console.log(item)
-  }
+
   public openDialog(mode:string,data?:any) {
-    
+    let size:any = {}
+    if(mode === 'delete') {
+      size = {
+        height: `260px`,
+        width: `300px`
+      } 
+    } else if(mode==='photos') {
+      size = {
+        height: `800px`,
+        width: `1200px`
+      } 
+    } else {
+      size = {
+        height: `600px`,
+        width: `800px`
+      }  
+    }
+
     const dialogRef = this.dialog.open(CarDialogComponent, {
-      height: mode === 'delete' ? '260px' : '600px' ,
-      width: mode === 'delete' ? '300px' : '800px'  ,
+      height: size.height ,
+      width: size.width   ,
       data:{...data, mode},
       
     });

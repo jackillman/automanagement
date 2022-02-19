@@ -33,7 +33,14 @@ export class CarDialogComponent implements OnInit {
     // public usersViewers = new FormControl();
     public selectedViewers: number[] = []
     public usersViewers = new FormControl([]);
-    public environmentApi = environment.api
+    public environmentApi = environment.api;
+    
+    public showImageSrc = ''
+    public isShowFullImage = false;
+    public isShowDeleteImage = false;
+    public folderForRemoveImage = '';
+    public imageForRemove = '';
+
     public myForm = new FormGroup({
       photo: new FormControl('', [Validators.required]),
       fileSource: new FormControl('', [Validators.required]),
@@ -118,14 +125,13 @@ export class CarDialogComponent implements OnInit {
 
      
     }
+    ngOnDestroy() {
+      this.isShowFullImage = false;
+      this.isShowDeleteImage = false;
+      this.folderForRemoveImage = '';
+      this.imageForRemove = '';
+    }
 
-    // public setVal(user:User) {
-    //   const num = user.carList.find( (el:number)=>el===this.data.item_id)
-    //   if(!!num) {
-    //     this.selectedViewers.push(user.item_id)
-    //   }
-
-    // }
 
   public onNoClick(): void {
     this.dialogRef.close();
@@ -389,9 +395,13 @@ public onFileChange(event:any) {
 
       this.getService.upload(dir, formData,this.data).pipe(
       tap(data => console.log(data) ),
-      switchMap( (data:any ) => {
-          if(data) {
-         //   console.log(data)
+      switchMap( (resonse:any ) => {
+          if(resonse) {
+            if(resonse.data) {
+              this.data.photoList = resonse.data.photoList;
+              this.cdr.detectChanges()
+            }
+           console.log(resonse)
             this.SS.isCarsLoaded = false
              return this.getService.getItem('cars').pipe(
                 tap( (res:any) => {
@@ -420,5 +430,113 @@ public onFileChange(event:any) {
   
       }  )
 
+  }
+  public setImgSrc(folder:string,img:string):string {
+    return `${this.environmentApi}/uploads/${this.data.vin}/${folder}/${img}`
+  }
+  public removeImg(folder:string,img:string) {
+    console.log('remove image',img)
+    this.folderForRemoveImage = folder;
+    this.imageForRemove = img;
+    this.isShowDeleteImage = true
+  }
+  public showFullSizeImg(folder:any,img:string) {
+    this.isShowFullImage = true;
+    this.showImageSrc = `${this.environmentApi}/uploads/${this.data.vin}/${folder}/${img}`
+    console.log(img)
+    // if( event.target.classList.contains('full-image')) {
+    //   event.target.classList.remove('full-image')
+    // } else {
+    //   event.target.classList.add('full-image')
+    // }
+    
+  }
+ 
+  public closeShowImage(){
+    this.isShowFullImage = false;
+    this.showImageSrc = ''
+  }
+
+
+  public confirmRemoveImage() {
+    // console.log(this.data,this.folderForRemoveImage,this.imageForRemove)
+    // const item = {...this.data,item_id:this.data.item_id}
+    console.log('item',this.data,this.folderForRemoveImage,this.imageForRemove)
+    console.log(this.data.photoList[this.folderForRemoveImage])
+    this.data.photoList[this.folderForRemoveImage] = this.data.photoList[this.folderForRemoveImage].filter( (el:string)=>el!==this.imageForRemove)
+    console.log(this.data.photoList[this.folderForRemoveImage])
+    const additionals = {
+      folder:this.folderForRemoveImage,
+      image:this.imageForRemove
+    }
+    // const item = {...this.carData.value,item_id:this.data.item_id}
+    
+    const request$ = this.getService.editItem(`car`,this.data,additionals).pipe(
+    //  tap(data => console.log(data) ),
+      switchMap( (data:any ) => {
+          if(data) {
+           
+            this.SS.isCarsLoaded = false
+             return this.getService.getItem('cars').pipe(
+                tap( (res:any) => {
+  
+                  this.SS.carsList = this.SS.setCarList(res.data);
+                  this.SS.isCarsLoaded = true
+               //   console.log(res)
+                }),
+                  
+                )
+          } else {
+            return of(false)
+          }
+
+              
+
+      })
+    )
+    .subscribe(
+      (res:any)=>{
+        // this.dialogRef.close();
+        request$.unsubscribe();
+        this.cdr.detectChanges()
+      }
+    )
+    //this.getService.removeCarImage(item)
+    // const request$ = this.getService.editItem(`car`,item).pipe(
+    // //  tap(data => console.log(data) ),
+    //   switchMap( (data:any ) => {
+    //       if(data) {
+           
+    //         this.SS.isCarsLoaded = false
+    //          return this.getService.getItem('cars').pipe(
+    //             tap( (res:any) => {
+  
+    //               this.SS.carsList = this.SS.setCarList(res.data);
+    //               this.SS.isCarsLoaded = true
+    //            //   console.log(res)
+    //             }),
+                  
+    //             )
+    //       } else {
+    //         return of(false)
+    //       }
+
+              
+
+    //   })
+    // )
+    // .subscribe(
+    //   (res:any)=>{
+    //     this.dialogRef.close();
+    //     request$.unsubscribe();
+    //     this.cdr.detectChanges()
+    //   }
+    // )
+    this.isShowDeleteImage = false
+  }
+  public noRemoveImage(){
+    this.isShowDeleteImage = false;
+    this.folderForRemoveImage = '';
+    this.imageForRemove = ''
   }
 }

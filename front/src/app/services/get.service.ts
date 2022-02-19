@@ -62,8 +62,13 @@ export class GetService {
             );
     };
 
-    public editItem<I>(itemName: string,data:any): Observable<I|never> {
-        return this.http.put<I>(this.GS.SOURCE[itemName],data)
+    public editItem<I>(itemName: string,data:any,additionals?:any): Observable<I|never> {
+        let url = this.GS.SOURCE[itemName]
+        if(additionals) {
+            url = `${this.GS.SOURCE[itemName]}?folder=${additionals.folder}&image=${additionals.image}`
+        }
+        console.log(`url`,url)
+        return this.http.put<I>(url,data)
             .pipe(
                 tap((res) => { console.log(`edit I: `, res); }),
                 // tap((res: I) => {
@@ -75,7 +80,7 @@ export class GetService {
             );
     }
     public createItem<I>(itemName: string,data:any): Observable<I|never> {
-        console.log(`data`,data)
+    
         return this.http.post<I>(this.GS.SOURCE[itemName],data)
             .pipe(
                 tap((res) => { console.log(`create I: `, res); }),
@@ -102,6 +107,7 @@ export class GetService {
     }
 
     public setItem<I>(itemName: string,data:any): Observable<I|never> {
+
         return this.http.put<I>(this.GS.SOURCE[itemName],data)
             .pipe(
                 tap((res) => { console.log(`edit I: `, res); }),
@@ -116,38 +122,28 @@ export class GetService {
 
     public getNeededCars<I>(itemName: string,data:any): Observable<I|never> {
 
-        // if (!this.isBrowser) {
-       // console.log(`itemName`,this.GS.SOURCE[`${itemName}`])
-    
-            return this.http.post<I>(this.GS.SOURCE[`${itemName}`],data)
-                .pipe(
-                    //tap((res) => { console.log(`${itemName} I: `, res); }),
-                    tap((res: I) => {
-                        if(res) {
-                            return <I> res;
-                        } else {
-                            return null
-                        }
-                        
-                    }),
-                    // tap((res: I) => this.transferState.set(ITEM_KEY, res)),
-                    catchError((error: HttpErrorResponse|HttpResponse<any>) => <never> this.HES.handleError(error))
-                );
+        return this.http.post<I>(this.GS.SOURCE[`${itemName}`],data)
+            .pipe(
+                //tap((res) => { console.log(`${itemName} I: `, res); }),
+                tap((res: I) => {
+                    if(res) {
+                        return <I> res;
+                    } else {
+                        return null
+                    }
+                    
+                }),
+                // tap((res: I) => this.transferState.set(ITEM_KEY, res)),
+                catchError((error: HttpErrorResponse|HttpResponse<any>) => <never> this.HES.handleError(error))
+            );
 
     }
 
     public upload(dir:string,formData:any,car:Car): Observable<any|never> {
      //   console.log(`dir:string,formData:a`,dir,file)
-        console.log(`data`,formData)
-        console.log('car',car)
-        // const options = {
-        //     headers: new HttpHeaders().append('Content-Type', 'file;multipart/form-data; charset=utf-8')
-          
-         
-        //   }
-       
-     //   const formData = new FormData();
-      //  formData.append("thumbnail", file);
+        // console.log(`data`,formData)
+        // console.log('car',car)
+
         const timeStamp = new Date().getTime()
         const url = `${this.GS.SOURCE[`upload`]}/?type=${dir}&vin=${car.vin}&_id=${car._id}&timestamp=${timeStamp}`
         console.log(url,`url`)
@@ -172,5 +168,25 @@ export class GetService {
             // tap((res: I) => this.transferState.set(ITEM_KEY, res)),
              catchError((error: HttpErrorResponse|HttpResponse<any>) => <never> this.HES.handleError(error))
         );
+    }
+ 
+
+    public removeCarImage(data:Car,folderForRemoveImage:string,imageForRemove:string): Observable<any|never> {
+        const dataItem = {
+            car: data,
+            folder: folderForRemoveImage,
+            image: imageForRemove
+          } 
+          console.log(`dataItem`,dataItem)
+        return this.http.put(this.GS.SOURCE['car_remove_image'],dataItem)
+            .pipe(
+                tap((res) => { console.log(`edit I: `, res); }),
+                // tap((res: I) => {
+
+                //     return <I> res;
+                // }),
+                // tap((res: I) => this.transferState.set(ITEM_KEY, res)),
+                catchError((error: HttpErrorResponse|HttpResponse<any>) => <never> this.HES.handleError(error))
+            );
     }
 }

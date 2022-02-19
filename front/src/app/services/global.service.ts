@@ -17,10 +17,11 @@ export class GlobalService {
     public SOURCE: {[key: string]: string} = {
         // localization:       `/assets/locale/localization.json`,
         // articles:             `${this.API}/api/articles/`,
-        cars:                   `${this.API}/api/v1/cars/`,
+        cars:             `${this.API}/api/v1/cars/`,
         users:             `${this.API}/api/v1/users/`,
         auth:             `${this.API}/api/v1/auth/`,
         car:              `${this.API}/api/v1/car`, 
+        car_remove_image: `${this.API}/api/v1/car_remove_image`, 
         user:             `${this.API}/api/v1/user`, 
         user_set_car:     `${this.API}/api/v1/user/set_car`,
         needed_cars:     `${this.API}/api/v1/needed_cars`,

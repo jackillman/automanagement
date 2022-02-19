@@ -34,7 +34,7 @@ export class HomeComponent implements OnInit {
   ngOnInit(): void {
     // if(localStorage.getItem('token') ) {
     //   this.SS.isAuth = true
-    //   this.router.navigate(['/dashboard/users'])
+    //   this.router.navigate(['/dashboard/automobiles'])
     // }
   }
   openCalculatorDialog() {
