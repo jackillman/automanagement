@@ -75,7 +75,7 @@ export class CarDialogComponent implements OnInit {
           auction: new FormControl(``),
           model: new FormControl(``),
           vin: new FormControl(``),
-          price: new FormControl(1111),
+          price: new FormControl(0),
           port: new FormControl(``),
           title: new FormControl(true),
           container: new FormControl(``),
@@ -110,12 +110,6 @@ export class CarDialogComponent implements OnInit {
           })
         }
       } else  if(this.data.mode==='photos') {
-        // this.uploadForm =  new FormGroup({
-        //   profile: new FormControl(``),
-      
-        // });
-        console.log(`this.data.mode`,this.data)
-
 
         
       }
@@ -208,24 +202,18 @@ export class CarDialogComponent implements OnInit {
     }
 
   }
-  // public saveCreate() {
-  //   const item = {...this.carData.value}
-  //   console.log(`item`,item)
-  // }
+
   public removeCar(data:any) {
     console.log('remove')
     const request$ = this.getService.removeItem(`car`,data.item_id).pipe(
       tap(data => console.log(data) ),
       switchMap( (data:any ) => {
           if(data) {
-         //   console.log(data)
             this.SS.isCarsLoaded = false
              return this.getService.getItem('cars').pipe(
                 tap( (res:any) => {
-
                   this.SS.carsList = this.SS.setCarList(res.data);
                   this.SS.isCarsLoaded = true
-              //    console.log(res)
                 }),
                   
                 )
@@ -275,16 +263,7 @@ export class CarDialogComponent implements OnInit {
   
                     this.SS.userList = this.SS.setUserList(res.data);
                     this.usersSelectList = this.SS.userList.filter(el=>el.role!=='superadmin')
-         
-                    // this.usersSelectList.forEach(user=>{
-                    //   const exist = user.carList.find( (item_id:number)=>item_id===this.data.item_id)
-                
-                    //   if(!!exist) {
-                    //     this.selectedViewers.push(user.item_id)
-                    //   }
-                    // })
                     this.SS.isUsersLoaded = true
-                //    console.log(res)
                   }),
                     
                   )

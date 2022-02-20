@@ -40,14 +40,14 @@
         
             <mat-form-field  appearance="fill">
                 <mat-label>vin</mat-label>
-                <input type="text" matInput formControlName="vin"
+                <input type="text" matInput formControlName="vin" maxlength="17"
                        placeholder="vin">
         
             </mat-form-field>
         
             <mat-form-field  appearance="fill">
                 <mat-label>price</mat-label>
-                <input type="text" matInput formControlName="price"
+                <input type="number" matInput formControlName="price"
                        placeholder="price">
         
             </mat-form-field>
@@ -68,7 +68,7 @@
         
             <mat-form-field  appearance="fill">
                 <mat-label>container</mat-label>
-                <input type="text" matInput formControlName="container"
+                <input type="number" matInput formControlName="container"
                        placeholder="container">
         
             </mat-form-field>
@@ -150,7 +150,8 @@
             <ng-container *ngFor="let img of data.photoList.auction">
               <div class="img-wr">
                 <img [src]="setImgSrc('auction',img)" alt="" (click)="showFullSizeImg('auction',img)">
-                <span (click)="removeImg('auction',img)">delete</span>
+                <!-- <span (click)="removeImg('auction',img)">delete</span> -->
+                <img class="icon" (click)="removeImg('auction',img)" src="/assets/images/icons/delete-salad.png" >
               </div>
             
             </ng-container>
@@ -159,12 +160,12 @@
           <div class="imgs-block docs" *ngIf="data.photoList.docs.length">
             <h3>Документы</h3>
             <ng-container *ngFor="let img of data.photoList.docs" >
-              <div class="img-wr" (click)="showFullSizeImg($event,img)">
-          
+              <div class="doc-wr">
+                <a href="{{setImgSrc('docs',img)}}">{{img}}</a>
                 <!-- <img [src]="setImgSrc('docs',img)" alt=""> -->
-          
+                <img class="icon" (click)="removeImg('docs',img)" src="/assets/images/icons/delete-salad.png" >
 
-                <span>delete</span>
+                
               </div>
             </ng-container>
           </div>
@@ -175,7 +176,8 @@
             <ng-container *ngFor="let img of data.photoList.invoices">
               <div class="img-wr">
                 <img [src]="setImgSrc('invoices',img)" alt="" (click)="showFullSizeImg('invoices',img)">
-                <span (click)="removeImg('invoices',img)">delete</span>
+                <img class="icon" (click)="removeImg('invoices',img)" src="/assets/images/icons/delete-salad.png" >
+                <!-- <span (click)="removeImg('invoices',img)">delete</span> -->
               </div>
             </ng-container>
           </div>
@@ -185,7 +187,8 @@
             <ng-container *ngFor="let img of data.photoList.port">
               <div class="img-wr">
                 <img [src]="setImgSrc('port',img)" alt="" (click)="showFullSizeImg('port',img)">
-                <span (click)="removeImg('port',img)">delete</span>
+                <!-- <span (click)="removeImg('port',img)">delete</span> -->
+                <img class="icon" (click)="removeImg('port',img)" src="/assets/images/icons/delete-salad.png" >
               </div>
             
             </ng-container>
@@ -196,7 +199,8 @@
             <ng-container *ngFor="let img of data.photoList.warehouse">
               <div class="img-wr">
                 <img [src]="setImgSrc('warehouse',img)" alt="" (click)="showFullSizeImg('warehouse',img)">
-                <span (click)="removeImg('warehouse',img)">delete</span>
+                <!-- <span (click)="removeImg('warehouse',img)">delete</span> -->
+                <img class="icon" (click)="removeImg('port',img)" src="/assets/images/icons/delete-salad.png" >
               </div>
             
             </ng-container>
@@ -209,7 +213,7 @@
 
         <div class="delete-image-container" *ngIf="isShowDeleteImage">
         
-          <p>Вы действительно хотите удалить картинку ?</p>
+          <p>Вы действительно хотите удалить ?</p>
           <button mat-raised-button color="warn" (click)="confirmRemoveImage()">Да</button>
           <button mat-raised-button color="primary" (click)="noRemoveImage()">Нет</button>
         </div>
