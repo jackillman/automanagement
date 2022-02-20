@@ -46,8 +46,29 @@ export class CarDialogComponent implements OnInit {
       fileSource: new FormControl('', [Validators.required]),
       selectedType: new FormControl('auction', [Validators.required]),
     });
-
-
+    public selectedDeliveryStatus = null
+  //   public statusesDelivery = [
+  //     {
+  //       name:"sent",
+  //       title:"Отправлено"
+  //     },
+  //     {
+  //       name:"dispatch_port",
+  //       title:"Порт отправки"
+  //     },
+  //     {
+  //       name:"floats",
+  //       title:"Плывет"
+  //     },
+  //     {
+  //       name:"delivery_port",
+  //       title:"Порт доставки"
+  //     },
+  //     {
+  //       name:"received",
+  //       title:"Получено"
+  //     }
+  // ]
     public ngOnInit(): void {
     //  console.log(`this.data`,this.data)
 
@@ -77,7 +98,7 @@ export class CarDialogComponent implements OnInit {
           vin: new FormControl(``),
           price: new FormControl(0),
           port: new FormControl(``),
-          title: new FormControl(true),
+          title: new FormControl(false),
           container: new FormControl(``),
           customer: new FormControl(``),
           status: new FormControl(``),
@@ -86,10 +107,8 @@ export class CarDialogComponent implements OnInit {
       } else if(this.data.mode==='connect'){
         if(!this.SS.isUsersLoaded && this.SS.currentUser.role ==='admin' || this.SS.currentUser.role ==='superadmin') {
           
-          this.getService.getItem('users').pipe(
-       
-      
-            ).subscribe( (res:IResponse|any)=>{
+          this.getService.getItem('users').pipe()
+            .subscribe( (res:IResponse|any)=>{
            
               if(res.status===1) {
                 this.SS.userList = this.SS.setUserList(res.data);

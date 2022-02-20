@@ -28,4 +28,37 @@ export class StateService {
     public setUserList(list:IUser[]) {
         return [...list.map( (item:IUser)=>new User(item))]
     }
+
+    public statusesDelivery = [
+        {
+          name:"sent",
+          title:"Отправлено"
+        },
+        {
+          name:"dispatch_port",
+          title:"Порт отправки"
+        },
+        {
+          name:"floats",
+          title:"Плывет"
+        },
+        {
+          name:"delivery_port",
+          title:"Порт доставки"
+        },
+        {
+          name:"received",
+          title:"Получено"
+        }
+    ];
+
+
+    public getStatus(statusName:string):string{
+        const status = this.statusesDelivery.find(st=>st.name===statusName)
+        if(status) {
+            return status.title
+        } else {
+            return this.statusesDelivery[0].title
+        }
+    }
 }

@@ -59,13 +59,24 @@
         
             </mat-form-field>
         
-            <mat-form-field  appearance="fill">
+            <!-- <mat-form-field  appearance="fill">
                 <mat-label>title</mat-label>
                 <input type="text" matInput formControlName="title"
                        placeholder="title">
         
-            </mat-form-field>
+            </mat-form-field> -->
         
+            <mat-form-field appearance="fill">
+              <mat-label>Title</mat-label>
+              <select matNativeControl formControlName="title">
+                <!-- <option value="" selected></option> -->
+                <option value="false">Нет</option>
+                <option value="true">Да</option>
+             
+
+              </select>
+            </mat-form-field>
+
             <mat-form-field  appearance="fill">
                 <mat-label>container</mat-label>
                 <input type="number" matInput formControlName="container"
@@ -74,19 +85,28 @@
             </mat-form-field>
         
             <mat-form-field  appearance="fill">
-                <mat-label>customer</mat-label>
+                <mat-label>Покупатель</mat-label>
                 <input type="text" matInput formControlName="customer"
-                       placeholder="customer">
+                       placeholder="Покупатель">
         
             </mat-form-field>
         
-            <mat-form-field  appearance="fill">
+            <!-- <mat-form-field  appearance="fill">
                 <mat-label>status</mat-label>
                 <input type="text" matInput formControlName="status"
                        placeholder="status">
         
-            </mat-form-field>
+            </mat-form-field> -->
 
+            <!-- [(ngModel)]="selectedDeliveryStatus" -->
+            <mat-form-field appearance="fill">
+              <mat-label>Выбрать стутус</mat-label>
+              <mat-select  formControlName="status">
+                <mat-option *ngFor="let statusItem of SS.statusesDelivery" [value]="statusItem.name">
+                  {{statusItem.title}}
+                </mat-option>
+              </mat-select>
+            </mat-form-field>
 
 
               <div class="example-button-row">
