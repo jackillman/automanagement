@@ -17,14 +17,18 @@ import { StateService } from 'src/app/services/state.service';
 
 })
 export class UserDialogComponent implements OnInit {
+  public checkedRole: string ='';
+  public roles: string[] = ['client', 'admin'];
+  public userData!:FormGroup;
 
+  
   constructor( public dialogRef: MatDialogRef<UserDialogComponent>,
               @Inject(MAT_DIALOG_DATA) public data: any,
               public SS:StateService,
               public getService:GetService,
               public cdr:ChangeDetectorRef) { }
    
-    public userData!:FormGroup;
+   
     public ngOnInit(): void {
       console.log(`this.data`,this.data)
 
@@ -51,7 +55,7 @@ export class UserDialogComponent implements OnInit {
           lastName: new FormControl(``),
           email: new FormControl(``),
           isCreator: new FormControl(``),
-          carList: new FormControl(1111),
+          carList: new FormControl([]),
           role: new FormControl(``),
           allAuto: new FormControl(``),
           inWorkAuto: new FormControl(``),
@@ -62,8 +66,6 @@ export class UserDialogComponent implements OnInit {
 
  
     }
-    checkedRole: string ='';
-    roles: string[] = ['client', 'admin'];
 
   public onNoClick(): void {
     this.dialogRef.close();

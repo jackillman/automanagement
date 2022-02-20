@@ -4,90 +4,53 @@
 //#!/usr/bin/env node
 import express  from 'express';
 import  fs  from "fs";
+import { Schema } from 'mongoose';
 import path from 'path';
 const crypto = require('crypto')
 const jwt = require('express-jwt');
-import { Schema } from 'mongoose';
+
+import { carSchema } from './schemas/car.schema';
+import { userSchema } from './schemas/user.schema';
 
 const jsonwebtoken = require('jsonwebtoken');
-// import { User } from './models/user';
- const multer  = require('multer')
-// const storage = multer.diskStorage({
-//   destination: function (req, file, cb) {
-//     cb(null, 'uploads/')
-//   },
-//   filename: function (req, file, cb) {
-//     console.log(`file`,file)
-//     cb(null, Date.now() + path.extname(file.originalname)) //Appending extension
-//   }
-// })
-// // const upload = multer({ storage: storage });
-// const upload = multer({ dest: 'uploads/' })
 
+ const multer  = require('multer')
 
 
 export class Application {
-    private tokenKey = '1a2b-3c4d-5e6f-7g8h'
-    private carScheme = new Schema({
-      id_:String,
-      photo: String,
-      purchaseDate: String,
-      auction: String,
-      model: String,
-      vin:{ type : String ,  required : true },
-      price: Number,
-      port: String,
-      title: Boolean,
-      container: Number,
-      customer: String,
-      status: String,
-      item_id:{ type : Number , unique : true, required : true },
-      creator: {_id: String, login: String, item_id: Number, time_create: Number},
-      photoList:{auction: Array, docs: Array, invoices: Array, port: Array,warehouse:Array},
-      mainPhoto: {typeFolder: String, id_photo: String }
-    }, {versionKey: false})
-    private userScheme = new Schema({
-      id_:String,
-      isCreator:Boolean,
-      login:{ type : String ,  required : true },
-      name:String,
-      lastName:String,
-      password:String,
-      allAuto:Number,
-      inWorkAuto:Number,
-      item_id:{ type : Number , unique : true, required : true },
-      carList:{ type : Array , "default" : [{item_id:String,rights:String}] },
-      role:String
-    }, {versionKey: false})
+    private tokenKey = '1a2b-3c4d-5e6f-7g8h';
+	private carScheme:Schema;
+	private userScheme:Schema;
     private data:any
     constructor(data:any){
-     
+		this.carScheme = carSchema
+		this.userScheme = userSchema
      //  console.log("abababababababab",data)
         this.data = data
         this.init();
 
     }
-    public readFile(filePath: string) {
-      return new Promise(function (resolve, reject) {
-          fs.readFile(filePath, 'utf8', function (err, dataDemo1) {
-              if (err)
-                  reject(err);
-              else
-                  resolve(dataDemo1);
-          });
-      });
-  }
-    public async fsHandlerApp(filePath:string) {
-      // const filePath = path.join(__dirname, '../public/DATA/APIv2/promos.json');
-       try {
-           const data:any =  await this.readFile(filePath);
-         //  console.log(`data`,data)
-           return JSON.parse(data)
-       } catch (error) {
-           console.error(error);
-       }
+//     public readFile(filePath: string) {
+//       return new Promise(function (resolve, reject) {
+//           fs.readFile(filePath, 'utf8', function (err, dataDemo1) {
+//               if (err)
+//                   reject(err);
+//               else
+//                   resolve(dataDemo1);
+//           });
+//       });
+//   }
+//     public async fsHandlerApp(filePath:string) {
+//       // const filePath = path.join(__dirname, '../public/DATA/APIv2/promos.json');
+//        try {
+//            const data:any =  await this.readFile(filePath);
+//          //  console.log(`data`,data)
+//            return JSON.parse(data)
+//        } catch (error) {
+//            console.error(error);
+//        }
 
-   }
+//    }
 
 
   public getAllUsers(res) {
@@ -130,8 +93,7 @@ export class Application {
      
 
       const user = new Users({
-        // isCreator:req.body.isCreator,
-      
+
         isCreator:false,
         login:req.body.login,
         lastName: req.body.lastName,
@@ -300,138 +262,138 @@ export class Application {
   }
 
 
-  public async editCar(req,res) {
-   // console.log(`req.body`,req.body)
-    if(!req.body) return res.sendStatus(400);
+	public async editCar(req,res) {
+	// console.log(`req.body`,req.body)
+		if(!req.body) return res.sendStatus(400);
 
-    const folder = req.query.folder;
-    const image = req.query.image;
+		const folder = req.query.folder;
+		const image = req.query.image;
+		const Cars = this.data.mongoose.model("Cars", this.carScheme);
+		const filter = {item_id:+req.body.item_id}
+		const obj = {...req.body}
+		Cars.findOneAndUpdate(
+			filter,              // критерий выборки
+			{ $set:  obj },     // параметр обновления
+			{ new: true},
+			function(err, result){
+				if(folder && image) {
+				const dirPath = path.join(__dirname, './public/uploads/');
+				const pathFull = path.join(dirPath, result.vin,folder,image);
+				try {
+					const statsObj = fs.statSync(pathFull);
+					if(statsObj) {
+					fs.unlinkSync(pathFull);
+					}
+				
+				}
+				catch(err) {
+					console.log('it does not exist',err);
+				}
 
-      const Cars = this.data.mongoose.model("Cars", this.carScheme);
-      // const item_id = +req.body.item_id;
-      const filter = {item_id:+req.body.item_id}
-      const obj = {...req.body}
+				
+				}
+			
+				res.send({status:1,data:result,message:folder && image ? 'edit item and remove image':'edit item' }) 
+			}
+		);
+	}
+	public deleteFolderRecursive (directoryPath) {
+		if (fs.existsSync(directoryPath)) {
+			fs.readdirSync(directoryPath).forEach((file, index) => {
+			const curPath = path.join(directoryPath, file);
+			if (fs.lstatSync(curPath).isDirectory()) {
+			// recurse
+				this.deleteFolderRecursive(curPath);
+			} else {
+				// delete file
+				fs.unlinkSync(curPath);
+			}
+			});
+			fs.rmdirSync(directoryPath);
+		}
+	};
 
-      Cars.findOneAndUpdate(
-        filter,              // критерий выборки
-        { $set:  obj },     // параметр обновления
-        {
-          new: true
-        },
-        function(err, result){
-        
-            if(folder && image) {
-    
-              const dirPath = path.join(__dirname, './public/uploads/');
-              const pathFull = path.join(dirPath, result.vin,folder,image);
-           
-              fs.unlinkSync(pathFull);
-            }
-           
-            res.send({status:1,data:result,message:folder && image ? 'edit item and remove image':'edit item' }) 
-        }
-    );
-  }
-  public deleteFolderRecursive (directoryPath) {
-    if (fs.existsSync(directoryPath)) {
-        fs.readdirSync(directoryPath).forEach((file, index) => {
-          const curPath = path.join(directoryPath, file);
-          if (fs.lstatSync(curPath).isDirectory()) {
-           // recurse
-            this.deleteFolderRecursive(curPath);
-          } else {
-            // delete file
-            fs.unlinkSync(curPath);
-          }
-        });
-        fs.rmdirSync(directoryPath);
-      }
-    };
+	public deleteCar(req,res) {
+		const Cars = this.data.mongoose.model("Cars", this.carScheme);
+		// const item_id = +req.body.item_id;
+		const item_id = +req.params.item_id;
+		const self = this
+		const dirPath = path.join(__dirname, './public/uploads/');
+		Cars.findOneAndDelete({item_id:item_id}, function(err, car){
+			
+			if(err) return console.log(err);
+			if(car) {
+				self.deleteFolderRecursive(path.join(dirPath, car.vin))
 
-  public deleteCar(req,res) {
-    const Cars = this.data.mongoose.model("Cars", this.carScheme);
-    // const item_id = +req.body.item_id;
-    const item_id = +req.params.item_id;
-    const self = this
-    const dirPath = path.join(__dirname, './public/uploads/');
-    Cars.findOneAndDelete({item_id:item_id}, function(err, car){
-        
-        if(err) return console.log(err);
-        if(car) {
-     
-          self.deleteFolderRecursive(path.join(dirPath, car.vin))
-        //  fs.rmSync(path.join(dirPath, car.vin), { recursive: true, force: true });
-          res.send({status:1,data:car,message:'Car was deleted'});
-        } else {
-          res.send({
-                  status: 0,
-                  data: null,
-                  message:`Такого Авто не существует`
-                });
-        }
-        
-    });
+				res.send({status:1,data:car,message:'Car was deleted'});
+			} else {
+				res.send({
+						status: 0,
+						data: null,
+						message:`Такого Авто не существует`
+						});
+			}
+			
+		});
 
-  }
+	}
 
 
-  public searchCarsByIds(req,res) {
-  
-    const Cars = this.data.mongoose.model("Cars", this.carScheme);
-    const carList = req.body.carList;
-    console.log(`carList`,carList)
-    const ids = carList.map(el=>el.item_id)
- 
-    Cars.find(  {item_id: {
-      $in: ids
-    }
-  }, function(err, car){
-        
-        if(err) return console.log(err);
-        console.log(car)
-        if(car) {
-          res.send({status:1,data:car});
-        } else {
-          res.send({
-                  status: 0,
-                  data: [],
-                  message:`Нет авто`
-                });
-         
-        }
-        
-    });
+	public searchCarsByIds(req,res) {
+	
+		const Cars = this.data.mongoose.model("Cars", this.carScheme);
+		const carList = req.body.carList;
+		console.log(`carList`,carList)
+		const ids = carList.map(el=>el.item_id)
+	
+		Cars.find(  {item_id: {$in: ids}
+	}, function(err, car){
+			
+			if(err) return console.log(err);
+			console.log(car)
+			if(car) {
+			res.send({status:1,data:car});
+			} else {
+			res.send({
+					status: 0,
+					data: [],
+					message:`Нет авто`
+					});
+			
+			}
+			
+		});
 
-  }
+	}
 
   public checkRole(role:string):string {
     const roles =['superadmin','admin','client'];
     return !!roles.find(roleItem=>roleItem===role) ? role : 'client'
   }
+
+
   public async addCarToUser(req,res) {
     console.log(`req`,req.body)
-   // const Cars = this.data.mongoose.model("Cars", this.carScheme);
- 
+
     if(!req.body) return res.sendStatus(400);
  
       const Users = this.data.mongoose.model("Users", this.userScheme);
-      // const item_id = +req.body.item_id;
+
       const filter = {item_id:+req.body.user_id}
-      // const obj = {carList:req.body.car_id}
-      // { $push: { friends: objFriends  } },
+
       const user = await Users.findOne(filter, function(err, user){
         if(err) return console.log(err);
         return user
        
       });
-     
+      console.log(`user`,user)
       if(user) {
         if(req.body.action) {
 
           const exist = user.carList.find(el=>el.item_id===req.body.car_id);
          
           if(!!exist) return res.send({status:1,data:null,message:`car exists in user`});
-          user.carList.push({item_id:req.body.car_id});
+          user.carList.push({item_id:req.body.car_id,vin:req.body.vin});
           
         } else {
         
@@ -462,10 +424,6 @@ export class Application {
    
     private createApi(){
 
-      // const type = upload.single('photo');
-    //  const upload = this.data.multer({ storage: storage });
-      // const type = multer({ storage: storage }).single('photo')
-    //  console.log(type)
         this.data.app.put('/api/v1/user/set_car', (req:express.Request ,res:express.Response,next:Function)=> this.addCarToUser(req,res));
 
 
@@ -491,7 +449,7 @@ export class Application {
          
             const dirPath = path.join(__dirname, './public/uploads/');
             const pathFull = path.join(dirPath, vin,type)
-            console.log(`pathFull`,pathFull)
+            // console.log(`pathFull`,pathFull)
     
             fs.stat(pathFull,(error, stats)=>{
               console.log(`stats`,stats)
@@ -504,31 +462,21 @@ export class Application {
             })
           } ,
          filename: function ( req:any, file:any, cb:any ) {
-          // //   //file.originalname
-          console.log('file',file)
-          // //     cb( null, new Date().getTime()+".png");
-        //  const timeStamp = new Date().getTime();
-          const timeStamp = req.query.timestamp;
-          console.log(timeStamp)
-      //    const Cars = this.data.mongoose.model("Cars", this.carScheme);
-          // const item_id = +req.body.item_id;
-      
-          // const vin = req.query.vin;
-          // const type = req.query.type;
+				console.log('file',file)
+				const timeStamp = req.query.timestamp;
+				console.log(timeStamp)
 
-          let extensionFile = 'png'; 
-          if(file.mimetype.includes('image/')) {
-            extensionFile  =file.mimetype.split('image/')[1] ? file.mimetype.split('image/')[1] : `png`;
-            console.log(`extensionFile`,extensionFile)
-            cb(null, timeStamp + '__' + file.originalname + "." + extensionFile);
-          } else {
-            extensionFile  = file.mimetype.split('application/')[1];
-            cb(null, timeStamp + '__' + `doc` + "." + extensionFile);
-          }
-        
-          
-         
-         }
+				let extensionFile = 'png'; 
+				if(file.mimetype.includes('image/')) {
+					extensionFile  =file.mimetype.split('image/')[1] ? file.mimetype.split('image/')[1] : `png`;
+					console.log(`extensionFile`,extensionFile)
+					cb(null, timeStamp + '__' + file.originalname + "." + extensionFile);
+				} else {
+					extensionFile  = file.mimetype.split('application/')[1];
+					cb(null, timeStamp + '__' + `doc` + "." + extensionFile);
+				}
+
+			}
         });
         let upload = multer( { storage: storage } );
         const type = upload.single('photo')
@@ -570,10 +518,8 @@ export class Application {
               res.send({status:0})
             }
 
-            console.dir(req.file);
-          }
 
-          console.log(`file`,req.file);
+          }
 
         })
 

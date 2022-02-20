@@ -27,7 +27,7 @@
 
               <ng-container matColumnDef="purchaseDate">
                 <th mat-header-cell *matHeaderCellDef> Дата покупки </th>
-                <td mat-cell *matCellDef="let element"> {{element.purchaseDate}} </td>
+                <td mat-cell *matCellDef="let element"> {{element.purchaseDate | date :'dd-MM-YYYY'}} </td>
               </ng-container>
             <!-- Name Column -->
             <ng-container matColumnDef="auction">

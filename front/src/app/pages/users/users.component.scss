@@ -35,6 +35,20 @@
             cursor: pointer;
             margin: 0 15px;
         }
+        td.mat-column-cars {
+            padding: 0 10px 0 0px;
+            max-width: 160px;
+            width: 160px;
+            p {
+                padding: 0;
+                margin: 0;
+            }
+        //    span {
+        //        display: block;
+        //        margin: 4px 0;
+        //    }
+    
+        }
         td.mat-column-delete {
             width: 50px;
     

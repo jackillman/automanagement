@@ -16,14 +16,27 @@
     <ng-container *ngIf="data.mode === 'create' || data.mode === 'edit' ">
     
         <form class="auth-form" [formGroup]="carData" (ngSubmit)="submitForm()">
-            <img src="/assets/images/" alt="">
-            <mat-form-field  appearance="fill">
+           
+            <!-- <mat-form-field  appearance="fill">
               <mat-label>purchaseDate</mat-label>
               <input type="text" matInput formControlName="purchaseDate"
                      placeholder="purchaseDate">
         
+            </mat-form-field> -->
+            <!-- <mat-form-field color="accent" appearance="fill">
+              <mat-label>Inherited calendar color</mat-label>
+              <input matInput [matDatepicker]="picker1">
+              <mat-datepicker-toggle matSuffix [for]="picker1"></mat-datepicker-toggle>
+              <mat-datepicker #picker1></mat-datepicker>
+            </mat-form-field> -->
+
+            <mat-form-field appearance="fill">
+              <mat-label>Angular forms</mat-label>
+              <input matInput [matDatepicker]="picker1" formControlName="purchaseDate">
+              <mat-datepicker-toggle matSuffix [for]="picker1"></mat-datepicker-toggle>
+              <mat-datepicker #picker1></mat-datepicker>
             </mat-form-field>
-        
+
             <mat-form-field  appearance="fill">
                 <mat-label>auction</mat-label>
                 <input type="text" matInput formControlName="auction"
@@ -172,6 +185,9 @@
                 <img [src]="setImgSrc('auction',img)" alt="" (click)="showFullSizeImg('auction',img)">
                 <!-- <span (click)="removeImg('auction',img)">delete</span> -->
                 <img class="icon" (click)="removeImg('auction',img)" src="/assets/images/icons/delete-salad.png" >
+                <a [href]="setImgSrc('auction',img)" [download]="img">
+                  <img class="icon-download"   src="/assets/images/icons/cloud-download.png" >
+                </a>
               </div>
             
             </ng-container>
@@ -181,9 +197,9 @@
             <h3>Документы</h3>
             <ng-container *ngFor="let img of data.photoList.docs" >
               <div class="doc-wr">
-                <a href="{{setImgSrc('docs',img)}}">{{img}}</a>
+                <a target="_blank" href="{{setImgSrc('docs',img)}}">{{img}}</a>
                 <!-- <img [src]="setImgSrc('docs',img)" alt=""> -->
-                <img class="icon" (click)="removeImg('docs',img)" src="/assets/images/icons/delete-salad.png" >
+                <img class="icon"  (click)="removeImg('docs',img)" src="/assets/images/icons/delete-salad.png" >
 
                 
               </div>
@@ -197,7 +213,9 @@
               <div class="img-wr">
                 <img [src]="setImgSrc('invoices',img)" alt="" (click)="showFullSizeImg('invoices',img)">
                 <img class="icon" (click)="removeImg('invoices',img)" src="/assets/images/icons/delete-salad.png" >
-                <!-- <span (click)="removeImg('invoices',img)">delete</span> -->
+                <a [href]="setImgSrc('invoices',img)" [download]="img">
+                  <img class="icon-download"   src="/assets/images/icons/cloud-download.png" >
+                </a>
               </div>
             </ng-container>
           </div>
@@ -209,6 +227,10 @@
                 <img [src]="setImgSrc('port',img)" alt="" (click)="showFullSizeImg('port',img)">
                 <!-- <span (click)="removeImg('port',img)">delete</span> -->
                 <img class="icon" (click)="removeImg('port',img)" src="/assets/images/icons/delete-salad.png" >
+              
+                <a [href]="setImgSrc('port',img)" [download]="img">
+                  <img class="icon-download"   src="/assets/images/icons/cloud-download.png" >
+                </a>
               </div>
             
             </ng-container>
@@ -220,7 +242,10 @@
               <div class="img-wr">
                 <img [src]="setImgSrc('warehouse',img)" alt="" (click)="showFullSizeImg('warehouse',img)">
                 <!-- <span (click)="removeImg('warehouse',img)">delete</span> -->
-                <img class="icon" (click)="removeImg('port',img)" src="/assets/images/icons/delete-salad.png" >
+                <img class="icon" (click)="removeImg('warehouse',img)" src="/assets/images/icons/delete-salad.png" >
+                <a [href]="setImgSrc('warehouse',img)" [download]="img">
+                  <img class="icon-download"   src="/assets/images/icons/cloud-download.png" >
+                </a>
               </div>
             
             </ng-container>

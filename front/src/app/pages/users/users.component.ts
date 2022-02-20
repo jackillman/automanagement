@@ -26,7 +26,7 @@ export class UsersComponent implements OnInit {
    
   
         ).subscribe( (res:IResponse|any)=>{
-          console.log(`res`,res)
+    
           if(res.status===1) {
             this.SS.userList = this.SS.setUserList(res.data);
            console.log(`this.SS.carsList`,this.SS.userList)
@@ -57,7 +57,7 @@ export class UsersComponent implements OnInit {
       this.cdr.detectChanges()
     });
   }
-  public getCarIds(list:ICarListItem[]){
-    return list.map(el=>el.item_id)
+  public getCarVins(list:ICarListItem[]){
+    return list.map(el=>el.vin)
   }
 }
