@@ -14,7 +14,7 @@ import { StateService } from '../../services/state.service';
   encapsulation: ViewEncapsulation.None
 })
 export class AutomobilesComponent implements OnInit {
-  public additionalColumns = ['edit','connect','delete','photos']
+  public additionalColumns = ['edit','connect','photos','delete']
   public displayedColumns: string[] = ['position','photo','purchaseDate', 'auction', 'model', 'vin','price','port','title','container','customer','status'];
   public environmentApi = environment.api;
   constructor(private getService: GetService,

@@ -46,7 +46,8 @@ export class CarDialogComponent implements OnInit {
 		{value: 'port', viewValue: 'Порт'},
 		{value: 'warehouse', viewValue: 'Склад'},
 		];
-	public isShowButton = false
+	public auctionsList = ['IAAI','Copart']	
+	public isShowButton:boolean = false
 	constructor( public dialogRef: MatDialogRef<CarDialogComponent>,
 				@Inject(MAT_DIALOG_DATA) public data: any,
 				public SS:StateService,
@@ -72,7 +73,7 @@ export class CarDialogComponent implements OnInit {
 			container: new FormControl(this.data.container),
 			customer: new FormControl(this.data.customer),
 			status: new FormControl(this.data.status),
-			
+			_id: new FormControl(this.data._id),
 			});
 		} else if(this.data.mode==='create') {
 
@@ -249,6 +250,7 @@ export class CarDialogComponent implements OnInit {
 	public onCheckboxTap(ev:any,item_id:number) {
 
 		const data = {
+			_id: this.data._id,
 			user_id: item_id,
 			car_id: this.data.item_id,
 			vin:this.data.vin,

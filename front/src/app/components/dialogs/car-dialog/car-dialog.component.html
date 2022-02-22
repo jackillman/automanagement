@@ -37,13 +37,25 @@
               <mat-datepicker #picker1></mat-datepicker>
             </mat-form-field>
 
-            <mat-form-field  appearance="fill">
+            <!-- <mat-form-field  appearance="fill">
                 <mat-label>auction</mat-label>
                 <input type="text" matInput formControlName="auction"
                        placeholder="auction">
         
+            </mat-form-field> -->
+            <mat-form-field appearance="fill">
+              <mat-label>Аукцион</mat-label>
+              <mat-select matNativeControl formControlName="auction">
+                <!-- <option value="" selected></option> -->
+                <ng-container *ngFor="let auction of auctionsList">
+                  <mat-option [value]="auction">{{auction}}</mat-option>
+                </ng-container>
+                <!-- <option value="false">Нет</option>
+                <option value="true">Да</option> -->
+             
+
+              </mat-select>
             </mat-form-field>
-        
             <mat-form-field  appearance="fill">
                 <mat-label>model</mat-label>
                 <input type="text" matInput formControlName="model"
@@ -81,13 +93,13 @@
         
             <mat-form-field appearance="fill">
               <mat-label>Title</mat-label>
-              <select matNativeControl formControlName="title">
+              <mat-select matNativeControl formControlName="title">
                 <!-- <option value="" selected></option> -->
-                <option value="false">Нет</option>
-                <option value="true">Да</option>
+                <mat-option [value]="false">Нет</mat-option>
+                <mat-option [value]="true">Да</mat-option>
              
 
-              </select>
+              </mat-select>
             </mat-form-field>
 
             <mat-form-field  appearance="fill">
@@ -136,11 +148,12 @@
           <div class="connect-wrap">
             <h3>К кому прикреплено авто для просмотра</h3>
             <mat-list class="list">
+           
                 <mat-list-item class="item" *ngFor="let user of usersSelectList">
                   <mat-checkbox class="example-margin"
                     [checked]="checkCar(user.carList)"
   
-                    (change)="onCheckboxTap($event,user.item_id)">
+                    (change)="onCheckboxTap($event,user._id)">
                     {{user.login}} {{user.name}}
                   </mat-checkbox>
                  

@@ -269,30 +269,104 @@ export class Application {
 		const folder = req.query.folder;
 		const image = req.query.image;
 		const Cars = this.data.mongoose.model("Cars", this.carScheme);
+		
 		const filter = {item_id:+req.body.item_id}
 		const obj = {...req.body}
+		const foundedCar = await Cars.findOne({_id: req.body._id  })
+		console.log(`foundedCar`,foundedCar)
+		const self = this
 		Cars.findOneAndUpdate(
 			filter,              // критерий выборки
 			{ $set:  obj },     // параметр обновления
 			{ new: true},
-			function(err, result){
+			async function(err, result){
+				console.log(`result`,result)
+				console.log(`req.body`,req.body)
 				if(folder && image) {
-				const dirPath = path.join(__dirname, './public/uploads/');
-				const pathFull = path.join(dirPath, result.vin,folder,image);
-				try {
-					const statsObj = fs.statSync(pathFull);
-					if(statsObj) {
-					fs.unlinkSync(pathFull);
+					const dirPath = path.join(__dirname, './public/uploads/');
+					const pathFull = path.join(dirPath, result.vin,folder,image);
+					try {
+						const statsObj = fs.statSync(pathFull);
+						if(statsObj) {
+							fs.unlinkSync(pathFull);
+						}
+					
 					}
-				
-				}
-				catch(err) {
-					console.log('it does not exist',err);
-				}
+					catch(err) {
+						console.log('it does not exist',err);
+					}
 
 				
 				}
-			
+				if(foundedCar.vin !==result.vin) {
+					try {
+						console.log('need rename')
+						const dirPath = path.join(__dirname, './public/uploads/');
+						const pathFullOld = path.join(dirPath, foundedCar.vin);
+						console.log(`pathFullOld`,pathFullOld)
+						const pathFullNew = path.join(dirPath, result.vin);
+						console.log(`pathFullNew`,pathFullNew)
+						fs.rename(pathFullOld, pathFullNew, function(err) {
+							if (err) {
+							  console.log(err)
+							} else {
+							  console.log("Successfully renamed the directory.",pathFullNew)
+							}
+						  })
+					}
+					catch(err) {
+						console.log('it does not exist',err);
+					}
+				/// НУЖНО ОБновлять и юзера (список ВИН)
+					const Users = self.data.mongoose.model("Users", self.userScheme);
+					console.log(`result.vin`,result.vin)
+					console.log(`req.body.vin`,req.body.vin)
+					console.log(`foundedCar.vin`,foundedCar.vin)
+					const filter = {carList:{item_id:foundedCar.item_id}}
+					
+
+
+          /// work on it
+					// // console.log(`Cars`,Cars)
+					const userList = await Users.find({}, function(err, users){
+						 return users
+					
+					 });
+           for (let user of userList) {
+            console.log(user.carList)
+            const exist = user.carList.filter(el=>el._id===foundedCar._id)
+            console.log(`exist`,exist)
+            if(!!exist) {
+              user.carList = user.carList.filter(el=>el._id!==foundedCar._id)
+            } else {
+              user.carList.push({
+                item_id:result.item_id,
+                vin:result.vin,
+                _id:result._id
+              })
+            }
+
+            console.log(`--------user`, user.carList)
+            user.save().then((result) => {
+              console.log('rslt',result)
+            }).catch((err) => {
+                console.log('err',err)
+            });
+           }
+          // console.log(`usersList`,userList)
+					 console.log(`usersList`,JSON.stringify(userList))
+					//  usersList.forEach(user=>{
+					// 	const list = user.carList.map(car=>{
+					// 		console.log(`car.vin===foundedCar.vin`,car.vin,foundedCar.vin)
+					// 		 if(car.vin===foundedCar.vin) {
+					// 			car.vin = result.vin
+					// 		 }
+					// 		 return car
+					// 	 })
+					// 	 user.carList = list
+					//  })
+
+				}
 				res.send({status:1,data:result,message:folder && image ? 'edit item and remove image':'edit item' }) 
 			}
 		);
@@ -379,7 +453,7 @@ export class Application {
  
       const Users = this.data.mongoose.model("Users", this.userScheme);
 
-      const filter = {item_id:+req.body.user_id}
+      const filter = {_id:req.body.user_id}
 
       const user = await Users.findOne(filter, function(err, user){
         if(err) return console.log(err);
@@ -389,25 +463,24 @@ export class Application {
       console.log(`user`,user)
       if(user) {
         if(req.body.action) {
-
-          const exist = user.carList.find(el=>el.item_id===req.body.car_id);
-         
+          const exist = user.carList.find(el=>el._id===req.body._id);
+          console.log(`exist`,exist)
           if(!!exist) return res.send({status:1,data:null,message:`car exists in user`});
-          user.carList.push({item_id:req.body.car_id,vin:req.body.vin});
-          
+          const item = {
+            item_id:req.body.car_id,
+            vin:req.body.vin,
+            _id:req.body._id
+          }
+          console.log(`item`,item)
+          user.carList.push(item);
         } else {
-        
-          const exist = user.carList.find(el=>el.item_id===req.body.car_id);
+          const exist = user.carList.find(el=>el._id===req.body._id);
           if(!exist) return res.send({status:1,data:null,message:`car not remove in user`});
-          user.carList = user.carList.filter( el => el.item_id !== req.body.car_id );
-          // const index = user.carList.indexOf(req.body.car_id);
-          // if (index > -1) {
-          //   user.carList.splice(index, 1); 
-          // }
-         
+          user.carList = user.carList.filter( el => el._id !== req.body._id );
+
         }
        
-          
+          console.log(`user-user`,user)
           user.carList.sort( (a:number,b:number)=>a-b)
           user.save().then((result) => {
             return res.send({status:1,data:result}) 
