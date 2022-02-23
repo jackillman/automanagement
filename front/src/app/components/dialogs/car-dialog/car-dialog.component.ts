@@ -192,7 +192,7 @@ export class CarDialogComponent implements OnInit {
 							
 						)
 					} else {
-					return of(false)
+						return of(false)
 					}
 
 						
@@ -212,7 +212,7 @@ export class CarDialogComponent implements OnInit {
 
 	public removeCar(data:any) {
 		console.log('remove')
-		const request$ = this.getService.removeItem(`car`,data.item_id).pipe(
+		const request$ = this.getService.removeItem(`car`,data._id).pipe(
 			tap(data => console.log(data) ),
 			switchMap( (data:any ) => {
 				if(data) {

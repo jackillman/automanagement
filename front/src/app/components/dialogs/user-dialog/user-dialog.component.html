@@ -52,12 +52,13 @@
       
           </mat-form-field> -->
       
-          <mat-form-field  appearance="fill">
-              <mat-label>carList</mat-label>
+    
+              <!-- <mat-label>carList</mat-label>
               <input type="text" matInput formControlName="carList"
                      placeholder="carList">
+       -->
+
       
-          </mat-form-field>
       
         
               <!-- <mat-label>role</mat-label>
@@ -103,6 +104,17 @@
 
          
           </div>
+          <div class="cars">
+            <div *ngFor="let car of includedCars; let i = index" >
+                  
+              <mat-checkbox class="example-margin" (change)="checkboxPress($event,car)" [checked]="car.checked">
+                {{car.vin}}
+              </mat-checkbox>
+            </div>
+        
+              <input class="carList" type="text" matInput formControlName="carList"
+              placeholder="carList">
+           </div>
 
             <div class="button-row">
       

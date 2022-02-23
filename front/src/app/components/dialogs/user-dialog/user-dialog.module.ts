@@ -6,6 +6,7 @@ import { MatButtonModule } from '@angular/material/button';
 import { MatInputModule } from '@angular/material/input';
 import { UserDialogComponent } from './user-dialog.component';
 import {MatRadioModule} from '@angular/material/radio';
+import { MatCheckboxModule } from '@angular/material/checkbox';
 
 @NgModule({
   imports: [
@@ -14,7 +15,8 @@ import {MatRadioModule} from '@angular/material/radio';
       MatInputModule,
       MatButtonModule,
       FormsModule,
-      MatRadioModule
+      MatRadioModule,
+      MatCheckboxModule
   ],
   declarations: [
 

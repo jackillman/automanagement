@@ -125,7 +125,7 @@ export class Application {
 
       const Users = this.data.mongoose.model("Users", this.userScheme);
       // const item_id = +req.body.item_id;
-      const filter = {item_id:+req.body.item_id}
+      const filter = {_id:req.body._id}
       const obj = {...req.body,role:this.checkRole(req.body.role)}
 
       Users.findOneAndUpdate(
@@ -161,8 +161,8 @@ export class Application {
   public deleteUser(req,res) {
     const Users = this.data.mongoose.model("Users", this.userScheme);
     // const item_id = +req.body.item_id;
-    const item_id = +req.params.item_id;
-    Users.findOneAndDelete({item_id:item_id}, function(err, user){
+    const _id = req.params._id;
+    Users.findOneAndDelete({_id:_id}, function(err, user){
         
         if(err) return console.log(err);
         if(user) {
@@ -376,10 +376,10 @@ export class Application {
 	public deleteCar(req,res) {
 		const Cars = this.data.mongoose.model("Cars", this.carScheme);
 		// const item_id = +req.body.item_id;
-		const item_id = +req.params.item_id;
+		const _id = req.params._id;
 		const self = this
 		const dirPath = path.join(__dirname, './public/uploads/');
-		Cars.findOneAndDelete({item_id:item_id}, function(err, car){
+		Cars.findOneAndDelete({_id:_id}, function(err, car){
 			
 			if(err) return console.log(err);
 			if(car) {
@@ -488,12 +488,12 @@ export class Application {
 
         this.data.app.get('/api/v1/users', (req:express.Request ,res:express.Response,next:Function)=> this.getAllUsers(res));
         this.data.app.post('/api/v1/user',(req:express.Request ,res:express.Response,next:Function)=> this.createUser(req,res))
-        this.data.app.delete('/api/v1/user/:item_id',jwt({ secret:this.tokenKey,algorithms: ['HS256'] }),(req:express.Request ,res:express.Response,next:Function)=> this.deleteUser(req,res))
+        this.data.app.delete('/api/v1/user/:_id',jwt({ secret:this.tokenKey,algorithms: ['HS256'] }),(req:express.Request ,res:express.Response,next:Function)=> this.deleteUser(req,res))
         this.data.app.put('/api/v1/user',(req:express.Request ,res:express.Response,next:Function)=> this.editUser(req,res))
        
         this.data.app.get('/api/v1/cars', jwt({ secret:this.tokenKey,algorithms: ['HS256'] }),  (req:express.Request ,res:express.Response,next:Function)=> this.getAllCars(res));
         this.data.app.post('/api/v1/car', jwt({ secret:this.tokenKey,algorithms: ['HS256'] }) ,(req:express.Request ,res:express.Response,next:Function)=> this.createCar(req,res))
-        this.data.app.delete('/api/v1/car/:item_id',(req:express.Request ,res:express.Response,next:Function)=> this.deleteCar(req,res))
+        this.data.app.delete('/api/v1/car/:_id',(req:express.Request ,res:express.Response,next:Function)=> this.deleteCar(req,res))
         this.data.app.put('/api/v1/car',(req:express.Request ,res:express.Response,next:Function)=> this.editCar(req,res))
 
 

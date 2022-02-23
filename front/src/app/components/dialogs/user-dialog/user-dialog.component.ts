@@ -20,7 +20,7 @@ export class UserDialogComponent implements OnInit {
   public checkedRole: string ='';
   public roles: string[] = ['client', 'admin'];
   public userData!:FormGroup;
-
+  public includedCars:any[] = []
   
   constructor( public dialogRef: MatDialogRef<UserDialogComponent>,
               @Inject(MAT_DIALOG_DATA) public data: any,
@@ -33,7 +33,10 @@ export class UserDialogComponent implements OnInit {
       console.log(`this.data`,this.data)
 
       if(this.data.mode==='edit') {
-
+        this.includedCars = this.data.carList.map( (el:any)=>{
+          el.checked =true;
+          return el
+        })
         this.userData = new FormGroup({
           login: new FormControl(this.data.login),
           name: new FormControl(this.data.name),
@@ -66,16 +69,35 @@ export class UserDialogComponent implements OnInit {
 
  
     }
+  public checkboxPress(ev:any,car:any) {
+    console.log(ev,car)
+    this.includedCars.forEach(carItem=>{
+      if(carItem._id===car._id)  car.checked = ev.checked
+     
+    })
 
+  }
   public onNoClick(): void {
     this.dialogRef.close();
   }
   public submitForm() {
-    console.log(`carData`,this.userData.value);
-
+   
     if(this.data.mode==='edit') {
-      const item = {...this.userData.value,item_id:this.data.item_id}
-      console.log('item',item)
+ 
+      const list:any[] = []
+      this.includedCars.forEach(el=>{
+        if(el.checked)  {
+          list.push({
+            _id:el._id,
+            item_id:el.item_id,
+            vin:el.vin
+          })
+        }
+
+      })
+  
+      const item = {...this.userData.value,item_id:this.data.item_id,_id:this.data._id,carList:list}
+   
       const request$ = this.getService.editItem(`user`,item).pipe(
         // tap(data => console.log(data) ),
         switchMap( (data:any ) => {
@@ -155,8 +177,8 @@ export class UserDialogComponent implements OnInit {
   //   // console.log(`item`,item)
   // }
   public removeUser(data:any) {
-
-    const request$ = this.getService.removeItem(`user`,data.item_id).pipe(
+    console.log(`data`,data)
+    const request$ = this.getService.removeItem(`user`,data._id).pipe(
       tap(data => console.log(data) ),
       switchMap( (data:any ) => {
           if(data) {

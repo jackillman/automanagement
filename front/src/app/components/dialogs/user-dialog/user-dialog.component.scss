@@ -14,11 +14,23 @@
     form {
         display: flex;
         flex-wrap: wrap;
+        .cars {
+            display: flex;
+            width: 350px;
+            max-width: 350px;
+            flex-direction: column;
+            .carList {
+                display: none;
+            }
+        }
+        
+
         mat-form-field {
             
             display: flex;
             width: 350px;
             max-width: 350px;
+    
             .mat-form-field-wrapper {
                 
                 width: 100%!important;
@@ -38,6 +50,7 @@
     }
     .role-radio {
         margin-bottom: 20px;
+        width: 380px;
         mat-radio-group {
             display: flex;
             flex-direction: column;
