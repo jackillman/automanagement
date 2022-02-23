@@ -38,7 +38,7 @@ export class AutomobilesComponent implements OnInit {
            this.cdr.detectChanges()
           }
        
-        this.SS.isCarsLoaded = false
+        this.SS.isCarsLoaded = true
       })
     }
   } else {

@@ -33,7 +33,8 @@ export class UsersComponent implements OnInit {
            this.cdr.detectChanges()
           }
        
-        this.SS.isCarsLoaded = false
+        this.SS.isCarsLoaded = false;
+        this.SS.isUsersLoaded = true
       })
     }
       this.cdr.detectChanges()

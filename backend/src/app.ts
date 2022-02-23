@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-this-alias */
 /* eslint-disable prefer-const */
 /* eslint-disable prettier/prettier */
 
@@ -274,7 +275,8 @@ export class Application {
 		const obj = {...req.body}
 		const foundedCar = await Cars.findOne({_id: req.body._id  })
 		console.log(`foundedCar`,foundedCar)
-		const self = this
+		// eslint-disable-next-line @typescript-eslint/no-this-alias
+		const self = this;
 		Cars.findOneAndUpdate(
 			filter,              // критерий выборки
 			{ $set:  obj },     // параметр обновления
@@ -319,52 +321,36 @@ export class Application {
 					}
 				/// НУЖНО ОБновлять и юзера (список ВИН)
 					const Users = self.data.mongoose.model("Users", self.userScheme);
-					console.log(`result.vin`,result.vin)
+					console.log(`result`,result)
 					console.log(`req.body.vin`,req.body.vin)
 					console.log(`foundedCar.vin`,foundedCar.vin)
+          console.log(`foundedCar._id`,foundedCar)
 					const filter = {carList:{item_id:foundedCar.item_id}}
 					
-
-
-          /// work on it
-					// // console.log(`Cars`,Cars)
 					const userList = await Users.find({}, function(err, users){
 						 return users
 					
 					 });
-           for (let user of userList) {
-            console.log(user.carList)
-            const exist = user.carList.filter(el=>el._id===foundedCar._id)
-            console.log(`exist`,exist)
-            if(!!exist) {
-              user.carList = user.carList.filter(el=>el._id!==foundedCar._id)
-            } else {
-              user.carList.push({
-                item_id:result.item_id,
-                vin:result.vin,
-                _id:result._id
-              })
+           console.log(`usersList`,JSON.stringify(userList))
+          Users.updateMany(
+            {'carList._id':req.body._id},
+            { $set: { 
+              "carList.$": {
+                "_id": req.body._id,
+                "vin": req.body.vin,
+                "item_id": req.body.item_id
             }
+            } },
+            {multi:true,}
+          )
+          
+          
+          .then((result) => {
+            console.log('rslt',result)
+          }).catch((err) => {
+              console.log('err',err)
+          });
 
-            console.log(`--------user`, user.carList)
-            user.save().then((result) => {
-              console.log('rslt',result)
-            }).catch((err) => {
-                console.log('err',err)
-            });
-           }
-          // console.log(`usersList`,userList)
-					 console.log(`usersList`,JSON.stringify(userList))
-					//  usersList.forEach(user=>{
-					// 	const list = user.carList.map(car=>{
-					// 		console.log(`car.vin===foundedCar.vin`,car.vin,foundedCar.vin)
-					// 		 if(car.vin===foundedCar.vin) {
-					// 			car.vin = result.vin
-					// 		 }
-					// 		 return car
-					// 	 })
-					// 	 user.carList = list
-					//  })
 
 				}
 				res.send({status:1,data:result,message:folder && image ? 'edit item and remove image':'edit item' }) 
@@ -417,7 +403,7 @@ export class Application {
 	
 		const Cars = this.data.mongoose.model("Cars", this.carScheme);
 		const carList = req.body.carList;
-		console.log(`carList`,carList)
+
 		const ids = carList.map(el=>el.item_id)
 	
 		Cars.find(  {item_id: {$in: ids}
@@ -460,18 +446,18 @@ export class Application {
         return user
        
       });
-      console.log(`user`,user)
+    
       if(user) {
         if(req.body.action) {
           const exist = user.carList.find(el=>el._id===req.body._id);
-          console.log(`exist`,exist)
+        
           if(!!exist) return res.send({status:1,data:null,message:`car exists in user`});
           const item = {
             item_id:req.body.car_id,
             vin:req.body.vin,
             _id:req.body._id
           }
-          console.log(`item`,item)
+     
           user.carList.push(item);
         } else {
           const exist = user.carList.find(el=>el._id===req.body._id);
@@ -480,7 +466,7 @@ export class Application {
 
         }
        
-          console.log(`user-user`,user)
+      
           user.carList.sort( (a:number,b:number)=>a-b)
           user.save().then((result) => {
             return res.send({status:1,data:result}) 
@@ -535,14 +521,13 @@ export class Application {
             })
           } ,
          filename: function ( req:any, file:any, cb:any ) {
-				console.log('file',file)
+		
 				const timeStamp = req.query.timestamp;
-				console.log(timeStamp)
 
 				let extensionFile = 'png'; 
 				if(file.mimetype.includes('image/')) {
 					extensionFile  =file.mimetype.split('image/')[1] ? file.mimetype.split('image/')[1] : `png`;
-					console.log(`extensionFile`,extensionFile)
+				
 					cb(null, timeStamp + '__' + file.originalname + "." + extensionFile);
 				} else {
 					extensionFile  = file.mimetype.split('application/')[1];
@@ -556,8 +541,8 @@ export class Application {
         this.data.app.post('/api/v1/upload', type,async (req:any ,res:express.Response,next:Function)=> {
           //  console.log(`req`,req)
           let typeFolder = req.query.type;
-          const timeStamp = req.query.timestamp;
-          console.log(`  this.timeStamp`,timeStamp)
+          // const timeStamp = req.query.timestamp;
+
            const query = req.query.vin;
            console.log(`query`,query)
            console.log(`req`,req.file.filename)
@@ -572,8 +557,7 @@ export class Application {
              
             });
             if(car) {
-              console.log(`typeFolder`,typeFolder)
-              console.log(`car.photoList[typeFolder]`,car.photoList[typeFolder])
+          
               const filename = req.file.filename
               car.photoList[typeFolder].push(filename)
               car.save(function(err){

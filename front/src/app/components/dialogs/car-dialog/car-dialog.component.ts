@@ -146,7 +146,8 @@ export class CarDialogComponent implements OnInit {
 				switchMap( (data:any ) => {
 					if(data) {
 					
-					this.SS.isCarsLoaded = false
+					this.SS.isCarsLoaded = false;
+					this.SS.isUsersLoaded = false
 					return this.getService.getItem('cars').pipe(
 						tap( (res:any) => {
 			
