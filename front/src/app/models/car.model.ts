@@ -9,7 +9,8 @@ export class Car implements ICar{
     public photo: string = ''
     public port: string = ''
     public price: number = 0
-    public purchaseDate: string = ''
+    public purchaseDate: string = '';
+    public arrivalDate: string = '';
     public status: string = ''
     public title: boolean = false
     public vin: string = ''

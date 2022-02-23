@@ -64,6 +64,7 @@ export class CarDialogComponent implements OnInit {
 			this.carData = new FormGroup({
 			photo: new FormControl(this.data.photo),
 			purchaseDate: new FormControl(this.data.purchaseDate),
+			arrivalDate: new FormControl(this.data.arrivalDate),
 			auction: new FormControl(this.data.auction),
 			model: new FormControl(this.data.model),
 			vin: new FormControl(this.data.vin),
@@ -80,6 +81,7 @@ export class CarDialogComponent implements OnInit {
 			this.carData = new FormGroup({
 			photo: new FormControl(``),
 			purchaseDate: new FormControl(new Date()),
+			arrivalDate: new FormControl(``),
 			auction: new FormControl(``),
 			model: new FormControl(``),
 			vin: new FormControl(``),

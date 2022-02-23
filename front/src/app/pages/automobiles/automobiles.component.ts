@@ -14,8 +14,8 @@ import { StateService } from '../../services/state.service';
   encapsulation: ViewEncapsulation.None
 })
 export class AutomobilesComponent implements OnInit {
-  public additionalColumns = ['edit','connect','photos','delete']
-  public displayedColumns: string[] = ['position','photo','purchaseDate', 'auction', 'model', 'vin','price','port','title','container','customer','status'];
+  public additionalColumns = ['edit']//,'connect','photos','delete'
+  public displayedColumns: string[] = ['position','photo','purchaseDate','arrivalDate', 'auction', 'model', 'vin','price','port','title','container','customer','status'];
   public environmentApi = environment.api;
   constructor(private getService: GetService,
     public SS:StateService,
@@ -64,6 +64,7 @@ export class AutomobilesComponent implements OnInit {
  
 
   public openDialog(mode:string,data?:any) {
+   
     let size:any = {}
     if(mode === 'delete') {
       size = {

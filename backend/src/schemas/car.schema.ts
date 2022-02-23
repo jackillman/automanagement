@@ -4,6 +4,7 @@ export const carSchema = new Schema({
     id_:String,
     photo: String,
     purchaseDate: String,
+    arrivalDate: String,
     auction: String,
     model: String,
     vin:{ type : String ,  required : true },

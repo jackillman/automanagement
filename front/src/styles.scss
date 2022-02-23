@@ -23,3 +23,15 @@ mat-form-field {
 .half-hidden {
     opacity: 0.5;
 }
+.cdk-overlay-container {
+    .mat-menu-panel {
+        .mat-menu-content {
+            button.mat-menu-item {
+                img {
+                    width: 20px;
+                    margin-right: 10px;
+                }
+            }
+        }
+    }
+}

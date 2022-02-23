@@ -38,17 +38,21 @@
                 margin: 0;
             }
         }
-        td.mat-column-delete {
-            width: 50px;
-    
-        }
         td.mat-column-edit {
-            width: 50px;
-    
+            button {
+                display: flex;
+                justify-content: center;
+                margin-left: auto;
+            }
         }
-        td.mat-column-connect {
-            width: 50px;
-    
+    }
+}
+mat-menu {
+    button {
+        
+        img {
+            width: 20px;
         }
+        
     }
 }
